@@ -62,18 +62,11 @@ public class OutputGenerator {
 		
 		
 		output =  anomalyURI + space + rdfType + space +"<"+ arPrefix+"#Anomaly>" +  space + "." + space +  eol + 
-				  anomalyURI + space + i40Machine + space + "<"+wm+ "#Machine_"+ machineNr +">" + space + "." + space     
-				
+				  anomalyURI + space + i40Machine + space + "<"+wm+ "#Machine_"+ machineNr +">" + space + "." + space + eol+
+				  anomalyURI + space + inAbnormalDimension + space + "<" + wm+"#_"+machineNr+"_" + dimension + ">" +  space + "." + space + eol + 
+				  anomalyURI + space + hasTimeStamp + space + "<" + debsPrefix +"Timestamp_"+timestamp + ">" +  space + "." + space + eol+
+				  anomalyURI + space + hasProbab + space + "\""+  probability + "\"^^"+xmlDouble +  space +  "." + space 
 				; 
-		
-		
-		
-		
-		
-		
-		
-		
-		
 		
 		
 		
