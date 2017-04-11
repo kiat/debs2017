@@ -39,60 +39,6 @@ public class ReadingRDFJenaFromFile {
 	public static Model model = ModelFactory.createDefaultModel();
 
 
-	private static String lineStart = "<http://project-hobbit.eu/resources/debs2017#";
-	private static int lineStartSkip = lineStart.length();
-
-	private static final String machine = "<http://www.agtinternational.com/ontologies/I4.0#";
-	private static final int machineSkip = machine.length();
-
-	private static final String machine2 = "<http://www.agtinternational.com/ontologies/I4.0#machine> <http://www.agtinternational.com/ontologies/WeidmullerMetadata#Machine_";
-	private static final int machineSkip2 = machine2.length();
-
-	private static final String cycle1 = "<http://www.agtinternational.com/ontologies/IoTCore#";
-	private static final int cycleSkip1 = cycle1.length();
-
-	private static final String cycle2 = "<http://www.agtinternational.com/ontologies/IoTCore#valueLiteral> \"";
-	private static final int cycleSkip2 = cycle2.length();
-
-	private static final String observation1 = "<http://purl.oclc.org/NET/ssnx/ssn#";
-	private static final int observationSkip1 = observation1.length();
-	private static final int observationSkip2 = observation1.length() + 8;
-
-	private static final String observation2 = "<http://purl.oclc.org/NET/ssnx/ssn#observedProperty> <http://www.agtinternational.com/ontologies/WeidmullerMetadata#_";
-
-	private static final int observationSkip3 = observation2.length();
-	private static final int observationSkip4 = observation1.length() + 11;
-
-	private static final String observation3 = "<http://purl.oclc.org/NET/ssnx/ssn#observationResult> <http://project-hobbit.eu/resources/debs2017#Output_";
-	private static final int observationSkip5 = observation3.length();
-
-	private static final String output1 = "<http://purl.oclc.org/NET/ssnx/ssn#";
-	private static final int outputSkip1 = output1.length();
-
-	private static final String output2 = "<http://purl.oclc.org/NET/ssnx/ssn#hasValue> <http://project-hobbit.eu/resources/debs2017#Value_";
-	private static int outputSkip2 = output2.length();
-
-	private static final String value1 = "<http://www.agtinternational.com/ontologies/IoTCore#";
-	private static final int valueSkip1 = value1.length();
-
-	private static final String value2 = "<http://www.agtinternational.com/ontologies/IoTCore#valueLiteral> \"";
-	private static final int valueSkip2 = value2.length();
-
-	private static final char[] Observation = { 'O', 'b', 's', 'e', 'r', 'v', 'a', 't', 'i', 'o', 'n', '\0' };
-	private static final char[] ObservationGroup = { 'O', 'b', 's', 'e', 'r', 'v', 'a', 't', 'i', 'o', 'n', 'G', 'r', 'o', 'u', 'p', '\0' };
-	private static final char[] Output = { 'O', 'u', 't', 'p', 'u', 't', '\0' };
-	private static final char[] Value = { 'V', 'a', 'l', 'u', 'e', '\0' };
-	private static final char[] Cycle = { 'C', 'y', 'c', 'l', 'e', '\0' };
-	
-	static int machineIndex=0; 
-	static int cycleSize;
-	static int dimension=0;
-	static int valueIndex=0;
-	static double value = 0;
-	static int observationNumber=0;
-	static int outIndex;
-	
-	
 	public static void main(String[] args) {
 		long startTime = 0;
 
@@ -117,7 +63,6 @@ public class ReadingRDFJenaFromFile {
 						// TODO: You can change the method to check the
 						// performance.
 						processRDFMessage(segment.getBytes());
-//						processData(segment.getBytes());
 					}
 
 					segment = "";
@@ -139,12 +84,12 @@ public class ReadingRDFJenaFromFile {
 	}
 
 	private static void processRDFMessage(byte[] bytes) {
-		
-		int machineNr=0;
-		int dimensionNr=0;
-		int timestampNr=0;
-		double value=0;
-		
+
+		int machineNr = 0;
+		int dimensionNr = 0;
+		int timestampNr = 0;
+		double value = 0;
+
 		model.removeAll();
 		model.read(new ByteArrayInputStream(bytes), null, "N-TRIPLES");
 
@@ -161,206 +106,17 @@ public class ReadingRDFJenaFromFile {
 				Literal outputLiteral = soln.getLiteral("outputLiteral");
 				Object myLiteralObject = outputLiteral.getValue();
 
-				machineNr =  Integer.parseInt(machine.asResource().getLocalName().substring(8));
+				machineNr = Integer.parseInt(machine.asResource().getLocalName().substring(8));
 				dimensionNr = Integer.parseInt(observedDimension.asResource().getLocalName().substring(1).split("_")[1]);
 				timestampNr = Integer.parseInt(time.asResource().getLocalName().split("_")[1]);
-				
-				
-				if (myLiteralObject instanceof Double){
-					value=outputLiteral.getDouble();
+
+				if (myLiteralObject instanceof Double) {
+					value = outputLiteral.getDouble();
 					System.out.println(machineNr + "," + dimensionNr + "," + timestampNr + "," + value);
 				}
-				
-				
-
-//				if (myLiteralObject instanceof Integer)
-//					System.out.println(machineNr + "," + dimensionNr + "," +timestampNr + ","
-//							+ outputLiteral.getInt());
-//
-//				if (myLiteralObject instanceof String)
-//					System.out.println(machineNr + "," + dimensionNr + "," + timestampNr + ","
-//							+ outputLiteral);
 
 			}
 		}
-	}
-
-	private static void processData(byte[] bytes) {
-		StringReader targetReader = new StringReader(new String(bytes));
-		Scanner s = new Scanner(targetReader);
-
-		while (s.hasNextLine()) {
-			parse(s.nextLine());
-		}
-	}
-
-	private static int findCharacter(char[] chars, char c, int start) {
-
-		while (chars[start] != c) {
-			start++;
-		}
-
-		return start;
-	}
-
-	private static void parse(String line) {
-
-		// here we check the
-		int i = lineStartSkip;
-
-		char[] chars = line.toCharArray();
-
-		boolean isObservation = true;
-		boolean isObservationGroup = true;
-		boolean isOutput = true;
-		boolean isValue = true;
-		boolean isCycle = true;
-		
-		
-		
-
-		
-
-		int j = 0;
-
-		// figure out what we are dealing with....
-		while (chars[i] != '_') {
-
-			if (isObservationGroup) {
-				isObservationGroup = ObservationGroup[j] == chars[i];
-			}
-
-			if (isObservation) {
-				isObservation = Observation[j] == chars[i];
-			}
-
-//			if (isOutput) {
-//				isOutput = Output[j] == chars[i];
-//			}
-
-			if (isValue) {
-				isValue = Value[j] == chars[i];
-			}
-
-//			if (isCycle) {
-//				isCycle = Cycle[j] == chars[i];
-//			}
-
-			// we don't care about the others.
-			if (!isObservation && !isOutput && !isValue && !isObservationGroup && !isCycle) {
-				return;
-			}
-
-			j++;
-			i++;
-		}
-		
-		
-
-
-		// skip the '_'
-		i++;
-
-		// find the character >
-		j = findCharacter(chars, '>', i);
-
-		// extract the index of the thing...
-//		observationNumber = Integer.parseUnsignedInt(new String(chars, i, j - i));
-
-		// skip "> "
-		i = j + 2;
-
-		// we ware dealing wit an observation
-		if (isObservation) {
-			// here we only care about the dimension...
-			if (chars[i + observationSkip1] == 'o' && chars[i + observationSkip2] == 'P') {
-				i = findCharacter(chars, '_', i + observationSkip3) + 1;
-				j = findCharacter(chars, '>', i);
-
-				dimension = Integer.parseUnsignedInt(new String(chars, i, j - i));
-//				System.out.println("Observation_" + observationNumber + ", dimension : " + dimension);
-				return;
-			}
-
-//			if (chars[i + observationSkip1] == 'o' && chars[i + observationSkip4] == 'R') {
-//				j = findCharacter(chars, '>', i + observationSkip5);
-//				i += observationSkip5;
-//
-//				outIndex = Integer.parseUnsignedInt(new String(chars, i, j - i));
-////				System.out.println("Observation_" + i + ", Output number : " + outIndex);
-//
-//				return;
-//			}
-		}
-
-		// if we are dealing with an observation group
-		if (isObservationGroup) {
-			// in observation we only are interested in the machine...
-			if (chars[i + machineSkip] != 'm') {
-				return;
-			}
-
-			j = findCharacter(chars, '>', i + machineSkip2);
-			i += machineSkip2;
-
-			machineIndex = Integer.parseUnsignedInt(new String(chars, i, j - i));
-//			System.out.println("ObservationGroup_" + i + ", Machine number :" + machineIndex);
-
-		}
-
-//		if (isCycle) {
-//			// if it's a cycle we are only interested in the
-//			if (chars[i + cycleSkip1] != 'v') {
-//				return;
-//			}
-//
-//			j = findCharacter(chars, '"', i + cycleSkip2);
-//			i += cycleSkip2;
-//
-//			cycleSize = Integer.parseUnsignedInt(new String(chars, i, j - i));
-//
-////			System.out.println("Cycle_" + index + ", Cycle size : " + cycleSize);
-//
-//		}
-
-//		if (isOutput) {
-//			if (chars[i + outputSkip1] != 'h') {
-//				return;
-//			}
-//
-//			j = findCharacter(chars, '>', i + outputSkip2);
-//			i += outputSkip2;
-//
-//			valueIndex = Integer.parseUnsignedInt(new String(chars, i, j - i));
-//
-////			System.out.println("Output_" + index + ", Value  : " + valueIndex);
-//		}
-
-		if (isValue) {
-			if (chars[i + valueSkip1] != 'v') {
-				return;
-			}
-
-			j = findCharacter(chars, '"', i + valueSkip2);
-			i += valueSkip2;
-
-			String myValue = new String(chars, i, j - i);
-			
-
-			if (myValue.charAt(1) != 'A'){
-				
-				value = Double.parseDouble(myValue);
-
-//			System.out.println("Value_" + index + " = : " + value);
-			System.out.println(machineIndex+"," +  dimension + ","+  value);
-			}
-
-		}
-
-		
-		
-		
-		
 	}
 
 }
