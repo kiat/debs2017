@@ -10,7 +10,7 @@
 
 # Running 
 
-	java -XX:-UseGCOverheadLimit  -Xms4g -Xmx15g  -cp ./target/readingRDF-1.0-SNAPSHOT-jar-with-dependencies.jar edu.rice.readingRDF.ReadingRDFMain
+	java -XX:-UseGCOverheadLimit  -Xms4g -Xmx15g  -cp ./target/debs2017rice-1.0-SNAPSHOT-jar-with-dependencies.jar edu.rice.readingRDF.ReadingRDFMain
 
  
 

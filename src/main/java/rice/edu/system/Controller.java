@@ -9,8 +9,9 @@ public class Controller {
 
 	public static void main(String[] args) {
 
-		 MetadataManager.getInstance().readMetaData("./src/main/resources/molding_machine_10M.metadata.nt");
-
+		
+		// Reads the metadata and have it ready for use.
+		MetadataManager.getInstance().readMetaData("./src/main/resources/molding_machine_10M.metadata.nt");
 		 
 		
 		
