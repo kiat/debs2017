@@ -9,6 +9,11 @@ public class Controller {
 	// This HashMap keeps track of all seen Machines and Dimensions so far. 
 	HashMap<Integer, boolean[]>  machineDimensions;
 	
+	// This HashMap keeps track of the started Threads for Machine+Dimension .  
+	HashMap<Integer, Thread>  machineDimTheads;
+	
+	// 
+
 	
 	
 	private Controller() {
