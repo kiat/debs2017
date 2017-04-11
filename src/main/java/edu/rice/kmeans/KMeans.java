@@ -5,10 +5,49 @@ import java.io.FileNotFoundException;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Queue;
 import java.util.Scanner;
 
 
+
 public class KMeans {
+	
+	static Queue<Double> window; 
+	
+	int machineNr;
+	int dimensionNr;
+	
+	
+	
+	// Only the fist time we call this method. 
+	public void newSingleValue(Queue<Double> window){
+		this.window=window;
+		//TODO 
+		// run the anomaly detector ... 
+		
+	}
+	
+	
+	
+	
+	// each time we get a new value we call this method 
+	// this method should rerun the program and report the anomalies. 
+	public void newSingleValue(double value){
+		// rerun the anomaly detector ...
+		
+	}
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
 	
 	//DELETE THIS:
 	private boolean printDebugInfo = false;	
@@ -118,7 +157,7 @@ double clusteringPrecision = 0.00001;
 		
 		//Parameters provided by DEBS:		
 		int numPoints = 10;      // windowSize
-		int numClusters = 3;		//NOTE: Change this appropriately
+		int numClusters = 10;		//NOTE: Change this appropriately
 		int maxIterations = 50;		// Maximum iterations for "KMeans"
 		double _clusteringPrecision = 0.00001; 
 		
@@ -142,7 +181,7 @@ double clusteringPrecision = 0.00001;
 		int myTimeStamp = 0;
 		
 		try {
-			Scanner scan = new Scanner(new File("./src/main/resources/31.csv"));
+			Scanner scan = new Scanner(new File("./src/main/resources/106.csv"));
 			while(scan.hasNextLine()){
 				String line = scan.nextLine();
 				String[] tokens = line.split(";");
