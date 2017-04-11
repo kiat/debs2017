@@ -11,15 +11,14 @@ public class MetaDataManagerTests {
 	@Test
 	public void test() {
 		
-		 MetadataManager myMetadataManager = new MetadataManager();
-		 myMetadataManager.readMetaData("./src/main/resources/molding_machine_10M.metadata.nt");
+		 MetadataManager.getInstance().readMetaData("./src/main/resources/molding_machine_10M.metadata.nt");
 		 
-		 assertEquals(myMetadataManager.getClusterNr(59, 6), 10);
-		 assertEquals(myMetadataManager.getClusterNr(59, 66), 4);
-		 
+		 assertEquals(MetadataManager.getInstance().getClusterNr(59, 6), 10);
+		 assertEquals(MetadataManager.getInstance().getClusterNr(59, 66), 4);
 		 
 		 
-		 assertEquals(myMetadataManager.getThreshold(59, 6), 0.005, 0);
-		 assertEquals(myMetadataManager.getThreshold(59, 66), 0.005, 0);
+		 
+		 assertEquals(MetadataManager.getInstance().getThreshold(59, 6), 0.005, 0);
+		 assertEquals(MetadataManager.getInstance().getThreshold(59, 66), 0.005, 0);
 	}
 }

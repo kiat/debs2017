@@ -35,7 +35,7 @@ public class MetadataManager {
 	public static HashMap<Integer, int[]> clusterNo;
 	public static HashMap<Integer, double[]> threshhold;
 
-	public MetadataManager() {
+	private MetadataManager() {
 		clusterNo = new HashMap<Integer, int[]>();
 		threshhold = new HashMap<Integer, double[]>();
 	}

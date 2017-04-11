@@ -1,26 +1,12 @@
 package edu.rice.output;
 
+
+
 public class OutputGenerator {
-	
+
+
+	// This has to be a single counter to produce the anomaly numbers in sequence. 
 	public static long anomalyCounter=0;
-	
-	
-//	// RDF prefixes used in the debs2017 grand challenge metadata.  
-//	public static final String PREFIXES = 
-//			  "PREFIX iotcore: <http://www.agtinternational.com/ontologies/IoTCore#>  "
-//			+ "PREFIX ar:   <http://www.agtinternational.com/ontologies/DEBSAnalyticResults#> "
-//			+ "PREFIX debs2017: <http://project-hobbit.eu/resources/debs2017>   " 
-//			+ "PREFIX ssn: <http://purl.oclc.org/NET/ssnx/ssn#> "
-//			+ "PREFIX WeidmullerExamples: <http://www.agtinternational.com/resources/WeidmullerExamples#> "
-//			+ "PREFIX i40: <http://www.agtinternational.com/ontologies/I4.0#>" 
-//			+ "PREFIX owl: <http://www.w3.org/2002/07/owl#>"
-//			+ "PREFIX qudt: <http://data.nasa.gov/qudt/owl/qudt#>"
-//			+ "PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> "
-//			+ "PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#> " 
-//			+ "PREFIX ssn: <http://purl.oclc.org/NET/ssnx/ssn#> "
-//			+ "PREFIX wmm: <http://www.agtinternational.com/ontologies/WeidmullerMetadata#> " 
-//			+ "PREFIX xsd: <http://www.w3.org/2001/XMLSchema#> ";
-	
 	
 	//KIA: Let us keep this namespace the same as theirs to avoid any problems. 
 	public static final String RiceNamespace="http://project-hobbit.eu/resources/debs2017";
@@ -50,6 +36,23 @@ public class OutputGenerator {
 	
 	
 	
+	private OutputGenerator() {
+	}
+
+	
+	
+    static class SingletonHolder {
+    	static 	final OutputGenerator instance = new OutputGenerator();
+    }
+    
+    
+    public static OutputGenerator getInstance() {
+		return SingletonHolder.instance;
+
+    }
+	
+	
+	
 	
 	
 	public String outputAnomaly(int machineNr, int dimension, double probability, long timestamp){
@@ -57,7 +60,6 @@ public class OutputGenerator {
 		String output="";
 		String space=" ";
 		String eol = System.getProperty("line.separator");
-		
 		String anomalyURI="<"+RiceNamespace+"#Anomaly_"+ (anomalyCounter++) + ">";
 		
 		
@@ -66,32 +68,17 @@ public class OutputGenerator {
 				  anomalyURI + space + inAbnormalDimension + space + "<" + wm+"#_"+machineNr+"_" + dimension + ">" +  space + "." + space + eol + 
 				  anomalyURI + space + hasTimeStamp + space + "<" + debsPrefix +"Timestamp_"+timestamp + ">" +  space + "." + space + eol+
 				  anomalyURI + space + hasProbab + space + "\""+  probability + "\"^^"+xmlDouble +  space +  "." + space 
-				; 
-		
-		
-		
-		
+				; 	
 		return output;	
-		
 	} 
 	
 	
 	
 	public static void main(String[] args ){
 		
-		OutputGenerator myoutputgenarator=new OutputGenerator();
-		
-		System.out.println(myoutputgenarator.outputAnomaly(59, 31,0.004115226337448559, 24)); 
-		System.out.println(myoutputgenarator.outputAnomaly(59, 5,0.004115226337448559, 24)); 
-
-		
+		System.out.println(OutputGenerator.getInstance().outputAnomaly(59, 31,0.004115226337448559, 24)); 
+		System.out.println(OutputGenerator.getInstance().outputAnomaly(59, 5,0.004115226337448559, 24)); 
 	}
-	
-		
-	
-	
-	
-	
 	
 
 }
