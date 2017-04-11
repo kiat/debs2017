@@ -6,6 +6,7 @@ import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
 import java.io.StringReader;
+import java.util.LinkedList;
 import java.util.Scanner;
 
 import org.apache.jena.query.Query;
@@ -40,16 +41,16 @@ public class ReadingFromFile {
 
 	
 	public static void main(String[] args) {
-		long startTime = 0;
 
-		// NOW read the objects from memory
-		// START OF Time calculation
-		startTime = System.nanoTime();
-
+	    // open the file with the data
 		File file = new File("./src/main/resources/molding_machine_10M.nt");
 
+		// this will hold the data
+        LinkedList<byte[]> data = new LinkedList<>();
+
+        // read the file and process the data...
 		try (BufferedReader br = new BufferedReader(new FileReader(file))) {
-			String line = "";
+			String line;
 			String observationGroupTmp = "";
 			String segment = "";
 
@@ -59,11 +60,7 @@ public class ReadingFromFile {
 				if (tripleParts[0].contains("Group") && tripleParts[0].compareTo(observationGroupTmp) != 0) {
 
 					if (segment.compareTo("") != 0) {
-
-						// TODO: You can change the method to check the
-						// performance.
-						//processRDFMessage(segment.getBytes());
-						RDFParser.processData(segment.getBytes());
+                        data.addLast(segment.getBytes());
 					}
 
 					segment = "";
@@ -75,6 +72,13 @@ public class ReadingFromFile {
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
+
+        long startTime = System.nanoTime();
+
+		for(byte[] b : data ) {
+		    //processRDFMessage(b);
+            RDFParser.processData(b);
+        }
 
 		// End of time calculation
 		long endTime = System.nanoTime();
