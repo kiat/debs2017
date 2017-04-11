@@ -40,6 +40,22 @@ public class MetadataManager {
 		threshhold = new HashMap<Integer, double[]>();
 	}
 
+	
+	
+    static class SingletonHolder {
+    	static 	final MetadataManager instance = new MetadataManager();
+    }
+    
+    
+    public static MetadataManager getInstance() {
+		return SingletonHolder.instance;
+
+    }
+	
+	
+	
+	
+	
 	public void addMachine(int machineNr) {
 		int[] clusterNumbers = new int[121];
 		double[] threshholds = new double[121];
