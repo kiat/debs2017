@@ -30,15 +30,7 @@ public class MetadataManager {
 			+ "PREFIX wmm: <http://www.agtinternational.com/ontologies/WeidmullerMetadata#> " 
 			+ "PREFIX xsd: <http://www.w3.org/2001/XMLSchema#> ";
 	
-	String queryString = PREFIXES 
-			+ "Select  * where { " 
-	        + "?machine  rdf:type  i40:MachineType . " 
-			+ "?machine  ssn:hasProperty  ?numberOfClusterPerDim . "
-			+ "?numberOfClusterPerDim wmm:hasNumberOfClusters  ?numberOfClusters ." 
-			+ "?threshold wmm:isThresholdForProperty ?numberOfClusterPerDim  ."
-			+ "?threshold iotcore:valueLiteral ?thresholdValue  .  " 
-			+ "?numberOfClusterPerDim rdf:type wmm:StatefulProperty ." 
-			+ " } ORDER BY ASC(?machine)";
+
 
 	public static HashMap<Integer, int[]> clusterNo;
 	public static HashMap<Integer, double[]> threshhold;
@@ -55,20 +47,32 @@ public class MetadataManager {
 		threshhold.put(machineNr, threshholds);
 	}
 
-	public boolean machineIsAdded(int machineNr) {
 
+	
+	
+	public boolean machineIsAdded(int machineNr) {
 		if (clusterNo.containsKey(machineNr))
 			return true;
 		else
 			return false;
-
 	}
 
-	
+
+	// getter method for cluster numbers 
 	public int getClusterNr(int machineNr, int dimensionNr ){
-		
-		
-		return 0; 
+		if (clusterNo.containsKey(machineNr))
+			return clusterNo.get(machineNr)[dimensionNr];
+		else
+			return 0;
+	}
+	
+	
+	// getter method for thresholds  
+	public double getThreshold(int machineNr, int dimensionNr ){
+		if (threshhold.containsKey(machineNr))
+			return threshhold.get(machineNr)[dimensionNr];
+		else
+			return 0.0;
 	}
 	
 	
@@ -77,7 +81,21 @@ public class MetadataManager {
 
 		Model model = RDFDataMgr.loadModel(fileName);
 
+		
+        String  queryString = PREFIXES 
+				+ "Select  * where { " 
+		        + "?machine  rdf:type  i40:MachineType . " 
+				+ "?machine  ssn:hasProperty  ?numberOfClusterPerDim . "
+				+ "?numberOfClusterPerDim wmm:hasNumberOfClusters  ?numberOfClusters ." 
+				+ "?threshold wmm:isThresholdForProperty ?numberOfClusterPerDim  ."
+				+ "?threshold iotcore:valueLiteral ?thresholdValue  .  " 
+				+ "?numberOfClusterPerDim rdf:type wmm:StatefulProperty ." 
+				+ " } ORDER BY ASC(?machine)";
+		
+		
 		Query query = QueryFactory.create(queryString);
+		
+		System.out.println(queryString);
 
 		try (QueryExecution qexec = QueryExecutionFactory.create(query, model)) {
 			ResultSet results = qexec.execSelect();
@@ -107,13 +125,20 @@ public class MetadataManager {
 				clusterNo.get(machineNr)[dimensionNr]=numberOfClusters;
 				threshhold.get(machineNr)[dimensionNr]=threshold;
 				
-//				System.out.println(machineNr + "," + dimensionNr + "," + numberOfClusters + "," + threshold);
+				System.out.println(machineNr + "," + dimensionNr + "," + numberOfClusters + "," + threshold);
 
 			}
 		}
 		
 		
 		model.close();
+	}
+	
+	
+	public static void main(String[] args) {
+		 MetadataManager myMetadataManager = new MetadataManager();
+		 myMetadataManager.readMetaData("./src/main/resources/molding_machine_10M.metadata.nt");
+		
 	}
 
 }
