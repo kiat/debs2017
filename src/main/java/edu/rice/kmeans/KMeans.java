@@ -1,29 +1,17 @@
 package edu.rice.kmeans;
 
-import java.util.HashSet;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Random;
-
-
-
-
-
-
-
-//DELETE THIS:
 import java.io.File;
 import java.io.FileNotFoundException;
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.List;
 import java.util.Scanner;
 
 
-
-
-
-
-
-
 public class KMeans {
+	
+	//DELETE THIS:
+	private boolean printDebugInfo = false;	
 
 	//Number of Clusters. This metric should be related to the number of points
     private int NUMCLUSTERS = -1;
@@ -35,9 +23,7 @@ public class KMeans {
 	private int MAXITERATIONS = -1;
 
 	// Terminal condition for KMeans:
-	private double CLUSTERINGPRECISION = 0.0;
-	
-	
+	private double CLUSTERINGPRECISION = 0.0;	
 	
 	// Paramters for Anomaly detection:
 	private int SMALLERWINDOW = -1;
@@ -49,10 +35,8 @@ public class KMeans {
     private List<Cluster> clusters;
 	
 	
-	
 	// Results:
-	ArrayList<Integer> resultAnomalies = new ArrayList<Integer>();
-	ArrayList<Double> resultThreshold = new ArrayList<Double>();
+	double resultThreshold = -1;
 
 	 
 	// Actual Constructor:
@@ -77,7 +61,7 @@ public class KMeans {
 		
 		
 		//Parameters for anomaly detection:
-		this.SMALLERWINDOW = _smallerWindowSize + 1;
+		this.SMALLERWINDOW = _smallerWindowSize;
 		this.THRESHOLD = _thresholdProbability;
 		
 		
@@ -112,18 +96,10 @@ public class KMeans {
 			NUMCLUSTERS = countUnique;
 		}
 	
-
-    	//Print Initial state
-		//System.out.println("Printing Initial State: ");
-    	//plotClusters();
-
 		
 		// Perform the calculation:
 		this.performClustering();
 		
-		
-		//Perform anomaly detection;
-		//this.performAnomalyDetection();
 	}
 	
 	
@@ -142,7 +118,7 @@ double clusteringPrecision = 0.00001;
 		
 		//Parameters provided by DEBS:		
 		int numPoints = 10;      // windowSize
-		int numClusters = 10;		//NOTE: Change this appropriately
+		int numClusters = 3;		//NOTE: Change this appropriately
 		int maxIterations = 50;		// Maximum iterations for "KMeans"
 		double _clusteringPrecision = 0.00001; 
 		
@@ -158,16 +134,15 @@ double clusteringPrecision = 0.00001;
 		
 		
 		// Results:
-		ArrayList<Integer> finalAnomalies;
-		ArrayList<Double> finalThreshold;	
+		boolean hasAnomalies;
+		double finalThreshold;	
 			
-		
 		
 		//DELETE THIS: My timestamp
 		int myTimeStamp = 0;
 		
 		try {
-			Scanner scan = new Scanner(new File("31.csv"));
+			Scanner scan = new Scanner(new File("./src/main/resources/31.csv"));
 			while(scan.hasNextLine()){
 				String line = scan.nextLine();
 				String[] tokens = line.split(";");
@@ -175,7 +150,6 @@ double clusteringPrecision = 0.00001;
 				
 				// Add points:
 				_points.add(Double.parseDouble(tokens[tokens.length-1]));	
-				System.out.println("MyT: " + myTimeStamp);
 
 				// When window size matches, run algorithm:
 				if (_points.size() == numPoints) {		
@@ -184,40 +158,21 @@ double clusteringPrecision = 0.00001;
 					// This is how "KMeans" should be run for each window:
 					KMeans kmeans = new KMeans(numClusters, maxIterations, _clusteringPrecision, _points, _smallerWindowSize, _thresholdProbability);
 					
-					finalAnomalies = kmeans.performAnomalyDetection();
-					finalThreshold = kmeans.getThresholds();
-					
-					//for (int i = 0; i < finalAnomalies.size(); i++) {
-						if (finalAnomalies.size() > 0 ) {
-							System.out.println("TimeStamp: " + (myTimeStamp + finalAnomalies.get(finalAnomalies.size()-1)));
-							System.out.println("Threshold: " + finalThreshold.get(finalAnomalies.size()-1));
-						}
-						
-					//}
+					hasAnomalies = kmeans.performAnomalyDetection();
 					
 					
-					// Prepare for next run: Delete all the points found as anomalies:
-					if (finalAnomalies.size() > 0) {
+					
+					if (hasAnomalies) {
+						finalThreshold = kmeans.getThreshold();
 						
-						int startIndex = 1  + finalAnomalies.get(finalAnomalies.size()-1);	// Inclusive
-						int endIndex = numPoints;	// Exclusive
-						
-						if (startIndex == endIndex) {
-							_points.clear();
-							myTimeStamp = myTimeStamp + numPoints;
-						}
-						else {
-							_points.subList(0, startIndex).clear();
-							myTimeStamp = myTimeStamp + startIndex;
-						}						
+						System.out.println("TimeStamp: " + (myTimeStamp + numPoints - _smallerWindowSize - 1));
+						System.out.println("Threshold: " + finalThreshold);
 					}
-					else {
-						_points.remove(0);	// Slide window 1 place.
-						myTimeStamp = myTimeStamp + 1;
-					}
+				
+				
 					
-					
-					
+					_points.remove(0);	// Slide window 1 place.
+					myTimeStamp = myTimeStamp + 1;
 					
 				}
 				
@@ -228,28 +183,6 @@ double clusteringPrecision = 0.00001;
 		catch (FileNotFoundException fnfe) {
 			System.out.println(fnfe);
 		}
-	
-		
-		/* 
-		
-		//My Data:  Create Points:
-		for (int i = 0; i < numPoints; i++) {
-			_points.add(0.1 * i);
-		}	
-
-		// This is how "KMeans" should be run for each window:
-    	//KMeans kmeans = new KMeans(numClusters, maxIterations, _clusteringPrecision, _points, _smallerWindowSize, _thresholdProbability);		
-		
-		*/
-		
-		
-		
-		
-			
-
-		
-
-		
     }
     
 	// Auxiliary function: Prints the clusters:
@@ -260,16 +193,22 @@ double clusteringPrecision = 0.00001;
     	}
     }
 	
-	public ArrayList<Double> getThresholds() {
+	
+	
+	// Get threshold if anomaly detected:
+	public double getThreshold() {
 		return resultThreshold;
 	}
 	
 	
-	public ArrayList<Integer> performAnomalyDetection() {	
+	// Returns if window has anomaly or not:
+	public boolean performAnomalyDetection() {	
+		if (printDebugInfo) {
+			System.out.println("Inside Anomaly Detection!");
+		} 
 	
 		// Clear previous results:
-		resultAnomalies.clear();
-		resultThreshold.clear();
+		resultThreshold = -1;
 	
 		// Data structures:
 		int rowSum[] = new int[NUMCLUSTERS];
@@ -299,45 +238,24 @@ double clusteringPrecision = 0.00001;
 		// Additional parameters:
 		double curThreshold = 1.0;
 		double storeTransition[] = new double[points.size()-1];
-		
-		// First Window:
-		for (int i = 0; i < SMALLERWINDOW - 1; i++) {
+
+
+		// New anomaly detection code: 2.1
+		curThreshold = 1.0;
+		for (int i = (NUMPOINTS - SMALLERWINDOW - 1) ; i < NUMPOINTS - 1; i++) {
 			firstCluster = points.get(i).getCluster();
 			secondCluster = points.get(i+1).getCluster();
-				
-			storeTransition[i] = transition[firstCluster][secondCluster];
-			curThreshold = curThreshold * storeTransition[i];			
+			
+			curThreshold *= transition[firstCluster][secondCluster];
 		}
-		
-		// First window:
+
 		if (curThreshold < THRESHOLD) {
-			//System.out.println("Anomaly Index (Type 1) : " + (SMALLERWINDOW - 1));
-			//System.out.println(points.get(SMALLERWINDOW - 1).getX() + ", " + curThreshold);
-			resultAnomalies.add(0);
-			resultThreshold.add(curThreshold);
-		}
-		
-		
-		
-		// Subsequent Sliding:		
-		for (int i = SMALLERWINDOW - 1; i < points.size() - 1; i++) {
-			firstCluster = points.get(i).getCluster();
-			secondCluster = points.get(i+1).getCluster();
-			
-			storeTransition[i] = transition[firstCluster][secondCluster];
-			curThreshold = (curThreshold * storeTransition[i]) / storeTransition[i - (SMALLERWINDOW - 1)];
-			
-			
-			if (curThreshold < THRESHOLD) {
-				//System.out.println("Anomaly Index (Type 2): " + (i+1));
-				//System.out.println(points.get(i+1).getX() + ", " + curThreshold);
-				resultAnomalies.add(i+1 - (SMALLERWINDOW - 1));
-				resultThreshold.add(curThreshold);
-			}
-				
+			//System.out.println("New logic anomaly detected: " + points.get((NUMPOINTS - SMALLERWINDOW - 1)).getX() + ", " + curThreshold );
+			resultThreshold = curThreshold;
+			return true;	// Anomaly detected
 		}
 			
-		return resultAnomalies;
+		return false;	// Anomaly not found.
 	}
 	
     
