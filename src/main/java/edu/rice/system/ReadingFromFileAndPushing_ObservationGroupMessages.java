@@ -1,4 +1,4 @@
-package rice.edu.system;
+package edu.rice.system;
 
 import java.io.BufferedReader;
 import java.io.File;

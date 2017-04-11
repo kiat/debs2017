@@ -1,8 +1,12 @@
-package rice.edu.system;
+package edu.rice.system;
 
 import org.hobbit.core.Constants;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import edu.rice.system.DebsParrotBenchmarkSystem;
+import edu.rice.system.DebsParrotBenchmarkSystemRunner;
+import edu.rice.system.RiceBenchmarkSystem;
 
 import java.lang.reflect.Field;
 import java.util.Collections;

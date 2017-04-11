@@ -1,4 +1,4 @@
-package rice.edu.system;
+package edu.rice.system;
 
 import java.io.ByteArrayInputStream;
 
@@ -12,6 +12,8 @@ import org.apache.jena.rdf.model.Literal;
 import org.apache.jena.rdf.model.Model;
 import org.apache.jena.rdf.model.ModelFactory;
 import org.apache.jena.rdf.model.RDFNode;
+
+import edu.rice.system.DebsParrotBenchmarkSystem;
 
 class RiceBenchmarkSystem extends DebsParrotBenchmarkSystem {
 

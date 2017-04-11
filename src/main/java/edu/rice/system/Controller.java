@@ -1,8 +1,5 @@
-package rice.edu.system;
+package edu.rice.system;
 
-import org.aopalliance.reflect.Metadata;
-
-import edu.rice.kmeans.KMeans;
 import edu.rice.metadata.MetadataManager;
 
 public class Controller {
