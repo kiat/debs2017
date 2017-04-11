@@ -134,11 +134,5 @@ public class MetadataManager {
 		model.close();
 	}
 	
-	
-	public static void main(String[] args) {
-		 MetadataManager myMetadataManager = new MetadataManager();
-		 myMetadataManager.readMetaData("./src/main/resources/molding_machine_10M.metadata.nt");
-		
-	}
 
 }

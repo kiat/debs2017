@@ -100,7 +100,7 @@ public class ReadingFromFile {
 		// START OF Time calculation
 		startTime = System.nanoTime();
 
-		File file = new File("./04.04.2017_full_10M/molding_machine_10M.nt");
+		File file = new File("./src/main/resources/molding_machine_10M.nt");
 
 		try (BufferedReader br = new BufferedReader(new FileReader(file))) {
 			String line = "";
