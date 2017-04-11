@@ -30,10 +30,33 @@ class RiceBenchmarkSystem extends DebsParrotBenchmarkSystem {
                     + "PREFIX wmm: <http://www.agtinternational.com/ontologies/WeidmullerMetadata#> "
                     + "PREFIX xsd: <http://www.w3.org/2001/XMLSchema#> ";
 
+    
+	public static final String queryString = PREFIXES + " SELECT ?machine ?observedDimension  ?time ?outputLiteral WHERE { "
+			+ " ?ObservationGroup rdf:type               i40:MoldingMachineObservationGroup   . " + " ?ObservationGroup i40:machine            ?machine . "
+			+ " ?ObservationGroup ssn:observationResultTime ?time  . " + " ?ObservationGroup i40:contains           ?observation . "
+			+ " ?observation      ssn:observedProperty   ?observedDimension ." + " ?observation      ssn:observationResult  ?output . "
+			+ " ?output           ssn:hasValue           ?outputValue . " + " ?outputValue      iotcore:valueLiteral   ?outputLiteral . " + " }  ORDER BY ASC(?timeValue)";
+	
+	
 
+	
+	
+	
+	
+	
+	
+	
+	
     @Override
     protected void processData(byte[] bytes) {
 
+    	
+		int machineNr=0;
+		int dimensionNr=0;
+		int timestampNr=0;
+		double value=0;
+		
+		
     	// TODO: maybe we can create one Model instance and reuse it each time when we get a message. 
     	Model model = ModelFactory.createDefaultModel();
 
@@ -84,15 +107,15 @@ class RiceBenchmarkSystem extends DebsParrotBenchmarkSystem {
 				// Then use different methods for different value types. 
 				// TODO: we have only Double values. 
 				
-				if(myLiteralObject instanceof Double)
-				System.out.println(machine.asResource().getLocalName()   +"," + observedDimension.asResource().getLocalName() + "," + time.asResource().getLocalName() + "," +  outputLiteral.getDouble());
+				machineNr =  Integer.parseInt(machine.asResource().getLocalName().substring(8));
+				dimensionNr = Integer.parseInt(observedDimension.asResource().getLocalName().substring(1).split("_")[1]);
+				timestampNr = Integer.parseInt(time.asResource().getLocalName().split("_")[1]);
 				
-				if (myLiteralObject instanceof Integer)
-				System.out.println(machine.asResource().getLocalName()   +"," + observedDimension.asResource().getLocalName() + "," + time.asResource().getLocalName() + "," +  outputLiteral.getInt());
 				
-				if (myLiteralObject instanceof String)					
-				System.out.println(machine.asResource().getLocalName()   +"," + observedDimension.asResource().getLocalName() + "," + time.asResource().getLocalName() + "," +  outputLiteral);
-				
+				if (myLiteralObject instanceof Double){
+					value=outputLiteral.getDouble();
+					System.out.println(machineNr + "," + dimensionNr + "," + timestampNr + "," + value);
+				}
 			}
 		}
 			
