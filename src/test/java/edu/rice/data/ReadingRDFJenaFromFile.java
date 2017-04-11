@@ -112,7 +112,7 @@ public class ReadingRDFJenaFromFile {
 
 				if (myLiteralObject instanceof Double) {
 					value = outputLiteral.getDouble();
-					System.out.println(machineNr + "," + dimensionNr + "," + timestampNr + "," + value);
+					System.out.println(machineNr+ "," + dimensionNr + "," + timestampNr + "," + value);
 				}
 
 			}

@@ -116,7 +116,7 @@ class RiceBenchmarkSystem extends DebsParrotBenchmarkSystem {
 				
 				if (myLiteralObject instanceof Double){
 					value=outputLiteral.getDouble();
-					System.out.println(machineNr + "," + dimensionNr + "," + timestampNr + "," + value);
+					System.out.println(machine.asResource().getLocalName() + "," + dimensionNr + "," + timestampNr + "," + value);
 				}
 			}
 		}
