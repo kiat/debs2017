@@ -8,11 +8,13 @@ import java.util.List;
 import java.util.Queue;
 import java.util.Scanner;
 
+import edu.rice.output.OutputGenerator;
+
 
 
 public class KMeans {
 	
-	static Queue<Double> window; 
+	static ArrayList<Double> window; 
 	
 	int machineNr;
 	int dimensionNr;
@@ -20,7 +22,7 @@ public class KMeans {
 	
 	
 	// Only the fist time we call this method. 
-	public void newSingleValue(Queue<Double> window){
+	public void newSingleValue(ArrayList<Double> window){
 		this.window=window;
 		//TODO 
 		// run the anomaly detector ... 
@@ -33,8 +35,18 @@ public class KMeans {
 	// each time we get a new value we call this method 
 	// this method should rerun the program and report the anomalies. 
 	public void newSingleValue(double value){
+		
+		window.remove(0);
+		window.add(value);
+		
+		
 		// rerun the anomaly detector ...
 		
+		
+		// if any Anomalies 
+		
+		System.out.println(OutputGenerator.getInstance().outputAnomaly(59, 31, 0.004115226337448559, 24)); 
+
 	}
 	
 	
