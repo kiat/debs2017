@@ -1,0 +1,5 @@
+HOBBIT_SYSTEM_URI=http://project-hobbit.eu/resources/debs2017/debsparrotsystemexample
+HOBBIT_RABBIT_HOST=rabbit
+HOBBIT_SESSION_ID=exp1
+SYSTEM_PARAMETERS_MODEL={}
+HOBBIT_EXPERIMENT_URI=http://example.com/exp1
