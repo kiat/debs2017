@@ -39,14 +39,11 @@ class RiceBenchmarkSystem extends DebsParrotBenchmarkSystem {
 			+ " ?observation      ssn:observedProperty   ?observedDimension ." + " ?observation      ssn:observationResult  ?output . "
 			+ " ?output           ssn:hasValue           ?outputValue . " + " ?outputValue      iotcore:valueLiteral   ?outputLiteral . " + " }  ORDER BY ASC(?timeValue)";
 	
-
-
-
-
-
-
-
-
+	
+	// Here we send the generated output anomalies to their bus system.
+	protected void sendData(String message) {
+	
+	}
 
 	
     @Override
@@ -116,7 +113,7 @@ class RiceBenchmarkSystem extends DebsParrotBenchmarkSystem {
 				
 				if (myLiteralObject instanceof Double){
 					value=outputLiteral.getDouble();
-					System.out.println(machineNr + "," + dimensionNr + "," + timestampNr + "," + value);
+					System.out.println(machine.asResource().getLocalName() + "," + dimensionNr + "," + timestampNr + "," + value);
 				}
 			}
 		}
