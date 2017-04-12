@@ -16,7 +16,7 @@ public class FetchOutput {
             // Connect to the RabbitMQ
             Connection conn = factory.newConnection();
             Channel channel = conn.createChannel();
-            channel.queueDeclarePassive("hobbit.system-evalstore.exp1").getQueue();
+            String queue  = channel.queueDeclarePassive("hobbit.system-evalstore.exp1").getQueue();
 
             Consumer consumer = new DefaultConsumer(channel) {
                 @Override
@@ -27,6 +27,8 @@ public class FetchOutput {
                     System.out.println(message);
                 }
             };
+
+            channel.basicConsume(queue, true, consumer);
 
             Thread.sleep(60 * 10000);
 
