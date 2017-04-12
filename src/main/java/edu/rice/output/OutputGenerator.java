@@ -1,5 +1,9 @@
 package edu.rice.output;
 
+import java.io.IOException;
+
+import edu.rice.system.RiceBenchmarkSystem;
+
 
 
 public class OutputGenerator {
@@ -78,6 +82,17 @@ public class OutputGenerator {
 				  anomalyURI + space + inAbnormalDimension + space + "<" + wm+"#_"+machineNr+"_" + dimension + ">" +  space + "." + space + eol + 
 				  anomalyURI + space + hasTimeStamp + space + "<" + debsPrefix +"Timestamp_"+timestamp + ">" +  space + "." + space + eol+
 				  anomalyURI + space + hasProbab + space + "\""+  probability + "\"^^"+xmlDouble +  space +  "." + space; 	
+		
+		// send to the bus system for output 
+		try {
+			RiceBenchmarkSystem.getInstance().send(output);
+
+		
+		} catch (IOException e) {
+			e.printStackTrace();
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
 		
 		return output;	
 	} 
