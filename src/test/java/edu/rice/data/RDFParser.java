@@ -1,5 +1,7 @@
 package edu.rice.data;
 
+import edu.rice.system.Controller;
+
 import java.nio.ByteBuffer;
 import java.nio.CharBuffer;
 import java.nio.charset.Charset;
@@ -175,6 +177,8 @@ class RDFParser {
                 value = NumberParser.getDouble(myValue);
                 System.out.println(machineIndex+ "," + dimension + "," + timestampIndex+","+timestampValue + "," + value);
             }
+
+            Controller. getInstance().pushData(machineIndex, dimension, (int)timestampIndex, value);
         }
 
         return i;
