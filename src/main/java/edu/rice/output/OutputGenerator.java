@@ -79,7 +79,7 @@ public class OutputGenerator {
 				  anomalyURI + space + hasTimeStamp + space + "<" + debsPrefix +"Timestamp_"+timestamp + ">" +  space + "." + space + eol+
 				  anomalyURI + space + hasProbab + space + "\""+  probability + "\"^^"+xmlDouble +  space +  "." + space; 	
 		
-		return output.toString();	
+		return output;	
 	} 
 	
 	
