@@ -21,6 +21,8 @@ import org.apache.jena.rdf.model.RDFNode;
 
 import edu.rice.kmeans.KMeans;
 import edu.rice.system.Controller;
+import edu.rice.system.RiceBenchmarkSystem;
+
 
 public class ReadingRDFJenaFromFile {
 
@@ -94,7 +96,6 @@ public class ReadingRDFJenaFromFile {
 		double value = 0;
 
 		
-//		KMeans myKmeans= new KMeans(); 
 		
 		model.removeAll();
 		model.read(new ByteArrayInputStream(bytes), null, "N-TRIPLES");
@@ -123,6 +124,10 @@ public class ReadingRDFJenaFromFile {
 //					System.out.println(machineNr+ "," + dimensionNr + "," + timestampNr + "," + value);
 					
 					Controller. getInstance().pushData(machineNr, dimensionNr, timestampNr, value);
+					
+					
+//					RiceBenchmarkSystem.getInstance().send(bytes);
+//					RiceBenchmarkSystem.getInstance().send("");
 					
 				}
 

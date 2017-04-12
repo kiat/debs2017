@@ -58,8 +58,7 @@ public class DebsParrotBenchmarkSystemRunner {
         logger.debug("Running...");
         DebsParrotBenchmarkSystem system = null;
         try {
-            system = new RiceBenchmarkSystem();
-            system.init();
+            system = RiceBenchmarkSystem.getInstance();
             system.run();
         }
         catch (Exception e) {

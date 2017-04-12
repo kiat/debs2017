@@ -15,7 +15,7 @@ import org.apache.jena.rdf.model.RDFNode;
 
 import edu.rice.system.DebsParrotBenchmarkSystem;
 
-class RiceBenchmarkSystem extends DebsParrotBenchmarkSystem {
+public class RiceBenchmarkSystem extends DebsParrotBenchmarkSystem {
 
     private static final String PREFIXES =
             "PREFIX iotcore: <http://www.agtinternational.com/ontologies/IoTCore#>  "
@@ -39,17 +39,27 @@ class RiceBenchmarkSystem extends DebsParrotBenchmarkSystem {
 			+ " ?observation      ssn:observedProperty   ?observedDimension ." + " ?observation      ssn:observationResult  ?output . "
 			+ " ?output           ssn:hasValue           ?outputValue . " + " ?outputValue      iotcore:valueLiteral   ?outputLiteral . " + " }  ORDER BY ASC(?timeValue)";
 	
+	private static RiceBenchmarkSystem instance;
 	
-	// Here we send the generated output anomalies to their bus system.
-	protected void sendData(String message) {
-	
+	protected RiceBenchmarkSystem() throws Exception {
+		super();
+	    this.init();
 	}
-
+	
+	public static RiceBenchmarkSystem getInstance() throws Exception {
+		if(instance == null) {
+			instance = new RiceBenchmarkSystem();
+		}
+		
+		return instance;
+	}
+	
+	
 	
     @Override
     protected void processData(byte[] bytes) {
 
-    	
+    
 		int machineNr=0;
 		int dimensionNr=0;
 		int timestampNr=0;

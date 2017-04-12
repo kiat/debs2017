@@ -1,4 +1,4 @@
-package edu.rice.data;
+package edu.rice.rdfParser;
 
 import java.nio.ByteBuffer;
 import java.nio.CharBuffer;
@@ -7,7 +7,9 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
-class RDFParser {
+import edu.rice.data.NumberParser;
+
+public class RDFParser {
 
     private static String lineStart = "<http://project-hobbit.eu/resources/debs2017#";
     private static int lineStartSkip = lineStart.length();
@@ -50,7 +52,7 @@ class RDFParser {
     static String timestampValue;
     static long timestampIndex;
 
-    static void processData(byte[] bytes) throws ParseException {
+    public static void processData(byte[] bytes) throws ParseException {
 
         ByteBuffer byteBuffer = ByteBuffer.wrap(bytes);
         Charset utf8 = Charset.forName("UTF-8");

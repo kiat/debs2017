@@ -56,7 +56,7 @@ abstract class DebsParrotBenchmarkSystem extends AbstractCommandReceivingCompone
 
     private RabbitQueue inputQueue;
     private RabbitQueue outputQueue;
-
+    
     @Override
     public void init() throws Exception {
         logger.debug("Initializing...");
@@ -165,11 +165,11 @@ abstract class DebsParrotBenchmarkSystem extends AbstractCommandReceivingCompone
         send(TERMINATION_MESSAGE);
     }
 
-    protected void send(String string) throws IOException {
+    public void send(String string) throws IOException {
         send(string.getBytes(CHARSET));
     }
 
-    protected void send(byte[] bytes) throws IOException {
+    public void send(byte[] bytes) throws IOException {
         Channel channel = outputQueue.getChannel();
         channel.basicPublish("", outputQueue.getName(), MessageProperties.PERSISTENT_BASIC, bytes);
     }

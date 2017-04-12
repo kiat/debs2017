@@ -10,7 +10,7 @@ public class Controller {
 
 	// Window for each machine-dimension - First access the machine and then an
 	// Array of ArrayList.
-	static HashMap<Integer, LinkedList<Double>> windowsMap=new HashMap<Integer, LinkedList<Double>>();;
+	static HashMap<Integer, LinkedList<Double>> windowsMap=new HashMap<Integer, LinkedList<Double>>();
 
 	private Controller() {
 		// Reads the metadata and have it ready for use.
@@ -49,7 +49,7 @@ public class Controller {
 			// then check if the window is filled up for this dimension
 			if (windowsMap.get(machine_Dimension_ID).size() == Constants.Window_Size) {
 				
-				LinkedList<Double> m_window = windowsMap.get(machine_Dimension_ID);
+				LinkedList<Double> m_window = windowsMap.get(machine_Dimension_ID);		
 				
 				System.out.println("Machine_" + machineNr +"_"+dimensionNr+"  Window:"+m_window.toString());
 				
