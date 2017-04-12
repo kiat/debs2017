@@ -122,7 +122,7 @@ public class ReadingRDFJenaFromFile {
 					value = outputLiteral.getDouble();
 //					System.out.println(machineNr+ "," + dimensionNr + "," + timestampNr + "," + value);
 					
-					Controller. getInstance().pushData(machineNr, dimensionNr, timestampNr, value); 
+					Controller. getInstance().pushData(machineNr, dimensionNr, timestampNr, value);
 					
 				}
 
