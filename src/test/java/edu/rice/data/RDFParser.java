@@ -33,23 +33,14 @@ class RDFParser {
     private static final String value2 = "<http://www.agtinternational.com/ontologies/IoTCore#valueLiteral> \"";
     private static final int valueSkip2 = value2.length();
 
-    private static final String timestamp1 = "<http://www.agtinternational.com/ontologies/IoTCore#";
-    private static final int timestampSkip = timestamp1.length();
-
-    private static final String timestamp2 = "<http://www.agtinternational.com/ontologies/IoTCore#valueLiteral> \"";
-    private static final int timestampSkip2 = timestamp2.length();
-
     private static final char[] Observation = { 'O', 'b', 's', 'e', 'r', 'v', 'a', 't', 'i', 'o', 'n', '\0' };
     private static final char[] ObservationGroup = { 'O', 'b', 's', 'e', 'r', 'v', 'a', 't', 'i', 'o', 'n', 'G', 'r', 'o', 'u', 'p', '\0' };
     private static final char[] Timestamp = { 'T', 'i', 'm', 'e', 's', 't', 'a', 'm', 'p', '\0' };
     private static final char[] Value = { 'V', 'a', 'l', 'u', 'e', '\0' };
 
-    private static final SimpleDateFormat dateParser = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm");
-
     static int machineIndex=0;
     static int dimension=0;
     static double value = 0;
-    static String timestampValue;
     static long timestampIndex;
 
     static void processData(byte[] bytes) throws ParseException {
@@ -149,21 +140,8 @@ class RDFParser {
             machineIndex = NumberParser.getIntegerUnsafe(line.subSequence(i, j));
         }
 
-        // if it's a timestamp
-        else if(isTimestamp) {
-            // we only are interested in the value
-            if (line.charAt(i + timestampSkip) != 'v') {
-                return i + timestampSkip;
-            }
-
-            j = findCharacter(line, '"', i + timestampSkip2);
-            i += timestampSkip2;
-
-            timestampValue = line.subSequence(i, j).toString();
-        }
-
         // it's a value
-        else {
+        else if(isValue) {
             if (line.charAt(i + valueSkip1) != 'v') {
                 return i + valueSkip1;
             }
@@ -175,7 +153,7 @@ class RDFParser {
 
             if (myValue.charAt(1) != 'A') {
                 value = NumberParser.getDouble(myValue);
-                System.out.println(machineIndex+ "," + dimension + "," + timestampIndex+","+timestampValue + "," + value);
+                System.out.println(machineIndex+ "," + dimension + "," + timestampIndex+ "," + value);
             }
 
             Controller. getInstance().pushData(machineIndex, dimension, (int)timestampIndex, value);
