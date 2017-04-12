@@ -59,11 +59,14 @@ public class Controller {
 
 
 				if (MetadataManager.getInstance().getClusterNr(machineNr, dimensionNr) != 0) {
-		
+
 					boolean hasAnomalies = singleKMeans.performAllCalculation(MetadataManager.getInstance().getClusterNr(machineNr, dimensionNr),
 							Constants.maxClusteringIterations, Constants.clusteringPrecision, m_window, Constants.SMALLERWINDOW,
 							MetadataManager.getInstance().getThreshold(machineNr, dimensionNr));
 
+					if(dimensionNr==106)
+						System.out.println(MetadataManager.getInstance().getClusterNr(machineNr, dimensionNr));
+					
 					if (hasAnomalies) {
 						double finalThreshold = singleKMeans.getThreshold();
 						OutputGenerator.getInstance().outputAnomaly(machineNr, dimensionNr, finalThreshold, (timestampNr - Constants.SMALLERWINDOW));

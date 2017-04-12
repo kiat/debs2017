@@ -74,7 +74,7 @@ public class KMeans {
 		int myTimeStamp = 0;
 		
 		try {
-			Scanner scan = new Scanner(new File("./src/main/resources/31.csv"));
+			Scanner scan = new Scanner(new File("./src/main/resources/106.csv"));
 			while(scan.hasNextLine()){
 				String line = scan.nextLine();
 				String[] tokens = line.split(";");
