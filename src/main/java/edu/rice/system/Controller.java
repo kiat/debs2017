@@ -66,8 +66,9 @@ public class Controller {
 
 					if (hasAnomalies) {
 						double finalThreshold = singleKMeans.getThreshold();
+						OutputGenerator.getInstance().outputAnomaly(machineNr, dimensionNr, finalThreshold, (timestampNr - Constants.SMALLERWINDOW));
 
-						System.out.println(OutputGenerator.getInstance().outputAnomaly(machineNr, dimensionNr, finalThreshold, (timestampNr - Constants.SMALLERWINDOW)));
+//						System.out.println(OutputGenerator.getInstance().outputAnomaly(machineNr, dimensionNr, finalThreshold, (timestampNr - Constants.SMALLERWINDOW)));
 					}
 
 				}
