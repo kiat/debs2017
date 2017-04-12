@@ -1,9 +1,10 @@
 package edu.rice.data;
 
-import java.io.StringReader;
-import java.util.Scanner;
+import java.nio.ByteBuffer;
+import java.nio.CharBuffer;
+import java.nio.charset.Charset;
 
-public class RDFParser {
+class RDFParser {
 
     private static String lineStart = "<http://project-hobbit.eu/resources/debs2017#";
     private static int lineStartSkip = lineStart.length();
@@ -14,29 +15,12 @@ public class RDFParser {
     private static final String machine2 = "<http://www.agtinternational.com/ontologies/I4.0#machine> <http://www.agtinternational.com/ontologies/WeidmullerMetadata#Machine_";
     private static final int machineSkip2 = machine2.length();
 
-    private static final String cycle1 = "<http://www.agtinternational.com/ontologies/IoTCore#";
-    private static final int cycleSkip1 = cycle1.length();
-
-    private static final String cycle2 = "<http://www.agtinternational.com/ontologies/IoTCore#valueLiteral> \"";
-    private static final int cycleSkip2 = cycle2.length();
-
     private static final String observation1 = "<http://purl.oclc.org/NET/ssnx/ssn#";
     private static final int observationSkip1 = observation1.length();
     private static final int observationSkip2 = observation1.length() + 8;
 
     private static final String observation2 = "<http://purl.oclc.org/NET/ssnx/ssn#observedProperty> <http://www.agtinternational.com/ontologies/WeidmullerMetadata#_";
-
     private static final int observationSkip3 = observation2.length();
-    private static final int observationSkip4 = observation1.length() + 11;
-
-    private static final String observation3 = "<http://purl.oclc.org/NET/ssnx/ssn#observationResult> <http://project-hobbit.eu/resources/debs2017#Output_";
-    private static final int observationSkip5 = observation3.length();
-
-    private static final String output1 = "<http://purl.oclc.org/NET/ssnx/ssn#";
-    private static final int outputSkip1 = output1.length();
-
-    private static final String output2 = "<http://purl.oclc.org/NET/ssnx/ssn#hasValue> <http://project-hobbit.eu/resources/debs2017#Value_";
-    private static int outputSkip2 = output2.length();
 
     private static final String value1 = "<http://www.agtinternational.com/ontologies/IoTCore#";
     private static final int valueSkip1 = value1.length();
@@ -46,42 +30,35 @@ public class RDFParser {
 
     private static final char[] Observation = { 'O', 'b', 's', 'e', 'r', 'v', 'a', 't', 'i', 'o', 'n', '\0' };
     private static final char[] ObservationGroup = { 'O', 'b', 's', 'e', 'r', 'v', 'a', 't', 'i', 'o', 'n', 'G', 'r', 'o', 'u', 'p', '\0' };
-    private static final char[] Output = { 'O', 'u', 't', 'p', 'u', 't', '\0' };
     private static final char[] Value = { 'V', 'a', 'l', 'u', 'e', '\0' };
-    private static final char[] Cycle = { 'C', 'y', 'c', 'l', 'e', '\0' };
 
-    static int machineIndex=0;
-    static int cycleSize;
-    static int dimension=0;
-    static int valueIndex=0;
-    static double value = 0;
-    static int observationNumber=0;
-    static int outIndex;
 
-    public static void processData(byte[] bytes) {
-        StringReader targetReader = new StringReader(new String(bytes));
-        Scanner s = new Scanner(targetReader);
+    static void processData(byte[] bytes) {
 
-        while (s.hasNextLine()) {
-            parse(s.nextLine());
+        ByteBuffer byteBuffer = ByteBuffer.wrap(bytes);
+        Charset utf8 = Charset.forName("UTF-8");
+        CharBuffer charBuffer = utf8.decode(byteBuffer);
+
+        while (charBuffer.hasRemaining()) {
+            int i = parse(charBuffer);
+            i = findCharacter(charBuffer, '\n', i);
+            charBuffer = charBuffer.subSequence(i + 1, charBuffer.length());
         }
     }
 
-    private static int findCharacter(char[] chars, char c, int start) {
+    private static int findCharacter(CharBuffer chars, char c, int start) {
 
-        while (chars[start] != c) {
+        while (chars.charAt(start) != c) {
             start++;
         }
 
         return start;
     }
 
-    private static void parse(String line) {
+    private static int parse(CharBuffer line) {
 
         // here we check the
         int i = lineStartSkip;
-
-        char[] chars = line.toCharArray();
 
         boolean isObservation = true;
         boolean isObservationGroup = true;
@@ -90,23 +67,23 @@ public class RDFParser {
         int j = 0;
 
         // figure out what we are dealing with....
-        while (chars[i] != '_') {
+        while (line.charAt(i) != '_') {
 
             if (isObservationGroup) {
-                isObservationGroup = ObservationGroup[j] == chars[i];
+                isObservationGroup = ObservationGroup[j] == line.charAt(i);
             }
 
             if (isObservation) {
-                isObservation = Observation[j] == chars[i];
+                isObservation = Observation[j] == line.charAt(i);
             }
 
             if (isValue) {
-                isValue = Value[j] == chars[i];
+                isValue = Value[j] == line.charAt(i);
             }
 
             // we don't care about the others.
             if (!isObservation && !isValue && !isObservationGroup) {
-                return;
+                return i;
             }
 
             j++;
@@ -117,10 +94,10 @@ public class RDFParser {
         i++;
 
         // find the character >
-        j = findCharacter(chars, '>', i);
+        j = findCharacter(line, '>', i);
 
         // extract the index of the thing...
-		observationNumber = NumberParser.getIntegerUnsafe(new String(chars, i, j - i));
+		int observationNumber = NumberParser.getIntegerUnsafe(line.subSequence(i, j));
 
         // skip "> "
         i = j + 2;
@@ -128,47 +105,49 @@ public class RDFParser {
         // we ware dealing wit an observation
         if (isObservation) {
             // here we only care about the dimension...
-            if (chars[i + observationSkip1] == 'o' && chars[i + observationSkip2] == 'P') {
-                i = findCharacter(chars, '_', i + observationSkip3) + 1;
-                j = findCharacter(chars, '>', i);
+            if (line.charAt(i + observationSkip1) == 'o' && line.charAt(i + observationSkip2) == 'P') {
+                i = findCharacter(line, '_', i + observationSkip3) + 1;
+                j = findCharacter(line, '>', i);
 
-                dimension = NumberParser.getIntegerUnsafe(new String(chars, i, j - i));
-    			System.out.println("Observation_" + observationNumber + ", dimension : " + dimension);
-                return;
+                int dimension = NumberParser.getIntegerUnsafe(line.subSequence(i, j));
+    			//System.out.println("Observation_" + observationNumber + ", dimension : " + dimension);
+                return j;
             }
         }
 
         // if we are dealing with an observation group
         if (isObservationGroup) {
             // in observation we only are interested in the machine...
-            if (chars[i + machineSkip] != 'm') {
-                return;
+            if (line.charAt(i + machineSkip) != 'm') {
+                return i + machineSkip;
             }
 
-            j = findCharacter(chars, '>', i + machineSkip2);
+            j = findCharacter(line, '>', i + machineSkip2);
             i += machineSkip2;
 
-            machineIndex = NumberParser.getIntegerUnsafe(new String(chars, i, j - i));
+            int machineIndex = NumberParser.getIntegerUnsafe(line.subSequence(i, j));
+
+            return j;
         }
 
         if (isValue) {
-            if (chars[i + valueSkip1] != 'v') {
-                return;
+            if (line.charAt(i + valueSkip1) != 'v') {
+                return i + valueSkip1;
             }
 
-            j = findCharacter(chars, '"', i + valueSkip2);
+            j = findCharacter(line, '"', i + valueSkip2);
             i += valueSkip2;
 
-            String myValue = new String(chars, i, j - i);
 
+            if (line.charAt(i+1) != 'A') {
 
-            if (myValue.charAt(1) != 'A') {
-
-                value = NumberParser.getDouble(myValue);
-
-                System.out.println(machineIndex + "," + dimension + "," + value);
+                double value = NumberParser.getDouble(line.subSequence(i, j));
+                //System.out.println(machineIndex + "," + dimension + "," + value);
+                return j;
             }
         }
+
+        return i;
     }
 
 

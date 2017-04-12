@@ -50,9 +50,9 @@ public class OutputGenerator {
 		return SingletonHolder.instance;
 
     }
-	
-	
-	
+
+
+
 	
 	
 	public String outputAnomaly(int machineNr, int dimension, double probability, long timestamp){

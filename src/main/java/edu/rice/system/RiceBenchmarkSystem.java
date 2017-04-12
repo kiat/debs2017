@@ -39,15 +39,15 @@ class RiceBenchmarkSystem extends DebsParrotBenchmarkSystem {
 			+ " ?observation      ssn:observedProperty   ?observedDimension ." + " ?observation      ssn:observationResult  ?output . "
 			+ " ?output           ssn:hasValue           ?outputValue . " + " ?outputValue      iotcore:valueLiteral   ?outputLiteral . " + " }  ORDER BY ASC(?timeValue)";
 	
-	
 
-	
-	
-	
-	
-	
-	
-	
+
+
+
+
+
+
+
+
 	
     @Override
     protected void processData(byte[] bytes) {
