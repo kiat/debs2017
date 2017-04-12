@@ -19,6 +19,8 @@ import org.apache.jena.rdf.model.Model;
 import org.apache.jena.rdf.model.ModelFactory;
 import org.apache.jena.rdf.model.RDFNode;
 
+import edu.rice.kmeans.KMeans;
+
 public class ReadingRDFJenaFromFile {
 
 	public static final String PREFIXES = "PREFIX iotcore: <http://www.agtinternational.com/ontologies/IoTCore#>  "
@@ -90,6 +92,9 @@ public class ReadingRDFJenaFromFile {
 		int timestampNr = 0;
 		double value = 0;
 
+		
+//		KMeans myKmeans= new KMeans(); 
+		
 		model.removeAll();
 		model.read(new ByteArrayInputStream(bytes), null, "N-TRIPLES");
 
@@ -110,6 +115,8 @@ public class ReadingRDFJenaFromFile {
 				dimensionNr = Integer.parseInt(observedDimension.asResource().getLocalName().substring(1).split("_")[1]);
 				timestampNr = Integer.parseInt(time.asResource().getLocalName().split("_")[1]);
 
+				
+				
 				if (myLiteralObject instanceof Double) {
 					value = outputLiteral.getDouble();
 					System.out.println(machineNr+ "," + dimensionNr + "," + timestampNr + "," + value);
