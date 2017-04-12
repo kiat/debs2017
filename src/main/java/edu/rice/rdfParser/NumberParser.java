@@ -1,4 +1,4 @@
-package edu.rice.data;
+package edu.rice.rdfParser;
 /*
  Copyright (c) 2015, Laurent Bourges. All rights reserved.
 
