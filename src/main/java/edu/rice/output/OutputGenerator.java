@@ -68,7 +68,10 @@ public class OutputGenerator {
 				  anomalyURI + space + inAbnormalDimension + space + "<" + wm+"#_"+machineNr+"_" + dimension + ">" +  space + "." + space + eol + 
 				  anomalyURI + space + hasTimeStamp + space + "<" + debsPrefix +"Timestamp_"+timestamp + ">" +  space + "." + space + eol+
 				  anomalyURI + space + hasProbab + space + "\""+  probability + "\"^^"+xmlDouble +  space +  "." + space 
-				; 	
+				;
+		
+		
+		
 		return output;	
 	} 
 	

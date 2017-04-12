@@ -41,13 +41,7 @@ class RiceBenchmarkSystem extends DebsParrotBenchmarkSystem {
 	
 	
 
-	
-	
-	
-	
-	
-	
-	
+		
 	
     @Override
     protected void processData(byte[] bytes) {
