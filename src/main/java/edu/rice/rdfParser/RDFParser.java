@@ -1,5 +1,7 @@
 package edu.rice.rdfParser;
 
+import edu.rice.system.Controller;
+
 import java.nio.ByteBuffer;
 import java.nio.CharBuffer;
 import java.nio.charset.Charset;
@@ -37,7 +39,7 @@ public class RDFParser {
     static int machineIndex=0;
     static int dimension=0;
     static double value = 0;
-    static long timestampIndex;
+    static int timestampIndex;
 
     public static void processData(byte[] bytes) throws ParseException {
 
@@ -137,7 +139,7 @@ public class RDFParser {
         }
 
         // it's a value
-        else {
+        else if (isValue) {
             if (line.charAt(i + valueSkip1) != 'v') {
                 return i + valueSkip1;
             }
@@ -149,7 +151,8 @@ public class RDFParser {
 
             if (myValue.charAt(1) != 'A') {
                 value = NumberParser.getDouble(myValue);
-                System.out.println(machineIndex+ "," + dimension + "," + timestampIndex+","+ value);
+                Controller. getInstance().pushData(machineIndex, dimension, timestampIndex, value);
+                //System.out.println(machineIndex+ "," + dimension + "," + timestampIndex+","+ value);
             }
         }
 
