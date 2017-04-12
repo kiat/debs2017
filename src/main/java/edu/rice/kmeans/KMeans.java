@@ -1,13 +1,11 @@
 package edu.rice.kmeans;
 
-import java.util.HashSet;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Random;
-
 //DELETE THIS:
 import java.io.File;
 import java.io.FileNotFoundException;
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.List;
 import java.util.Scanner;
 
 import edu.rice.output.OutputGenerator;
@@ -162,11 +160,6 @@ public class KMeans extends Thread {
 		}
 	}
 
-	/*
-	 * double probabilityThreshold = 0.005 int windowSize = 10; int
-	 * transitionsAmount = 5; int maxClusteringIterations = 50; double
-	 * clusteringPrecision = 0.00001;
-	 */
 
 	// Auxiliary function: Prints the clusters:
 	private void plotClusters() {
@@ -216,7 +209,6 @@ public class KMeans extends Thread {
 
 		// Additional parameters:
 		double curThreshold = 1.0;
-//		double storeTransition[] = new double[points.size() - 1];
 
 		// New anomaly detection code: 2.1
 		curThreshold = 1.0;
