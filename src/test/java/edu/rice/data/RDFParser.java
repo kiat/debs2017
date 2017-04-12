@@ -173,7 +173,7 @@ class RDFParser {
 
             if (myValue.charAt(1) != 'A') {
                 value = NumberParser.getDouble(myValue);
-                System.out.println(machineIndex+ "," + dimension + "," + timestampIndex + "," + value);
+                System.out.println(machineIndex+ "," + dimension + "," + timestampIndex+","+timestampValue + "," + value);
             }
         }
 

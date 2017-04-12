@@ -77,8 +77,8 @@ public class ReadingFromFile {
         long startTime = System.nanoTime();
 
 		for(byte[] b : data ) {
-		    processRDFMessage(b);
-            //RDFParser.processData(b);
+//		    processRDFMessage(b);
+            RDFParser.processData(b);
         }
 
 		// End of time calculation

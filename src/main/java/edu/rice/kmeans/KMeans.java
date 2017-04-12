@@ -144,15 +144,14 @@ public class KMeans extends Thread {
 		// Perform the calculation:
 		this.performClustering();
 
-		boolean hasAnomalies = this.performAnomalyDetection();
+		boolean hasAnomalies = this.performAnomalyDetection(NUMCLUSTERS, SMALLERWINDOW, THRESHOLD);
 		if (hasAnomalies) {
 			// System.out.println(machineNumber+ ", " +dimensionNumber+ ", " +
 			// this.getThreshold()+ ", " +(timeStampCounter + NUMPOINTS -
 			// SMALLERWINDOW - 1));
 
 			// This is the Anomaly Output
-			System.out
-					.println(OutputGenerator.getInstance().outputAnomaly(machineNumber, dimensionNumber, this.getThreshold(), (timeStampCounter + NUMPOINTS - SMALLERWINDOW - 1)));
+			System.out.println(OutputGenerator.getInstance().outputAnomaly(machineNumber, dimensionNumber, getThreshold(), (timeStampCounter + NUMPOINTS - SMALLERWINDOW - 1)));
 
 			// System.out.println(OutputGenerator.getInstance().outputAnomaly(machineNumber,
 			// dimensionNumber, this.getThreshold(), (timeStampCounter +
@@ -175,18 +174,15 @@ public class KMeans extends Thread {
 	}
 
 	// Returns if window has anomaly or not:
-	public boolean performAnomalyDetection() {
-		if (printDebugInfo) {
-			// System.out.println("Inside Anomaly Detection!");
-		}
+	public boolean performAnomalyDetection(int numOfClusters, int smallerWindowSize, double threshhold) {
 
 		// Clear previous results:
 		resultThreshold = -1;
 
 		// Data structures:
-		int rowSum[] = new int[NUMCLUSTERS];
-		int count[][] = new int[NUMCLUSTERS][NUMCLUSTERS];
-		double transition[][] = new double[NUMCLUSTERS][NUMCLUSTERS];
+		int rowSum[] = new int[numOfClusters];
+		int count[][] = new int[numOfClusters][numOfClusters];
+		double transition[][] = new double[numOfClusters][numOfClusters];
 
 		// Count pairwise occurrences:
 		int firstCluster, secondCluster;
@@ -199,8 +195,8 @@ public class KMeans extends Thread {
 		}
 
 		// Create transition matrix:
-		for (int i = 0; i < NUMCLUSTERS; i++) {
-			for (int j = 0; j < NUMCLUSTERS; j++) {
+		for (int i = 0; i < numOfClusters; i++) {
+			for (int j = 0; j < numOfClusters; j++) {
 				if (count[i][j] > 0) {
 					transition[i][j] = ((double) count[i][j]) / rowSum[i];
 				}
@@ -212,19 +208,16 @@ public class KMeans extends Thread {
 
 		// New anomaly detection code: 2.1
 		curThreshold = 1.0;
-		for (int i = (NUMPOINTS - SMALLERWINDOW - 1); i < NUMPOINTS - 1; i++) {
+		for (int i = (NUMPOINTS - smallerWindowSize - 1); i < NUMPOINTS - 1; i++) {
 			firstCluster = points.get(i).getCluster();
 			secondCluster = points.get(i + 1).getCluster();
 
 			curThreshold *= transition[firstCluster][secondCluster];
 		}
 
-		// System.out.println(curThreshold);
 
-		if (curThreshold < THRESHOLD) {
-			// System.out.println("New logic anomaly detected: " +
-			// points.get((NUMPOINTS - SMALLERWINDOW - 1)).getX() + ", " +
-			// curThreshold );
+		// here is the anomaly detection 
+		if (curThreshold < threshhold) {
 			resultThreshold = curThreshold;
 			return true; // Anomaly detected
 		}
