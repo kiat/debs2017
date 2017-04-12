@@ -20,6 +20,7 @@ import org.apache.jena.rdf.model.ModelFactory;
 import org.apache.jena.rdf.model.RDFNode;
 
 import edu.rice.kmeans.KMeans;
+import edu.rice.system.Controller;
 
 public class ReadingRDFJenaFromFile {
 
@@ -81,7 +82,7 @@ public class ReadingRDFJenaFromFile {
 		long endTime = System.nanoTime();
 		double elapsedTotalTime = (endTime - startTime) / 1000000000.0;
 
-		System.out.println("Elapsed Time " + String.format("%.9f", elapsedTotalTime));
+//		System.out.println("Elapsed Time " + String.format("%.9f", elapsedTotalTime));
 
 	}
 
@@ -119,7 +120,10 @@ public class ReadingRDFJenaFromFile {
 				
 				if (myLiteralObject instanceof Double) {
 					value = outputLiteral.getDouble();
-					System.out.println(machineNr+ "," + dimensionNr + "," + timestampNr + "," + value);
+//					System.out.println(machineNr+ "," + dimensionNr + "," + timestampNr + "," + value);
+					
+					Controller. getInstance().pushData(machineNr, dimensionNr, timestampNr, value); 
+					
 				}
 
 			}

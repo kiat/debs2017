@@ -95,9 +95,9 @@ public class MetadataManager {
 	// This method read a metadata file and fills it in RAM
 	public void readMetaData(String fileName) {
 
+		
 		Model model = RDFDataMgr.loadModel(fileName);
 
-		
         String  queryString = PREFIXES 
 				+ "Select  * where { " 
 		        + "?machine  rdf:type  i40:MachineType . " 
@@ -110,13 +110,10 @@ public class MetadataManager {
 		
 		
 		Query query = QueryFactory.create(queryString);
-		
-		System.out.println(queryString);
 
 		try (QueryExecution qexec = QueryExecutionFactory.create(query, model)) {
 			ResultSet results = qexec.execSelect();
 
-			System.out.println("Number of Results " + results.hasNext());
 
 			for (; results.hasNext();) {
 				QuerySolution soln = results.nextSolution();
@@ -141,7 +138,7 @@ public class MetadataManager {
 				clusterNo.get(machineNr)[dimensionNr]=numberOfClusters;
 				threshhold.get(machineNr)[dimensionNr]=threshold;
 				
-				System.out.println(machineNr + "," + dimensionNr + "," + numberOfClusters + "," + threshold);
+//				System.out.println(machineNr + "," + dimensionNr + "," + numberOfClusters + "," + threshold);
 
 			}
 		}

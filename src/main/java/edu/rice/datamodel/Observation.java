@@ -44,7 +44,6 @@ public class Observation {
 	}
 
 	public Observation(URI observationURI, int observeredPropertyName, double observationResult) {
-		super();
 		this.observationURI = observationURI;
 		this.observeredPropertyName = observeredPropertyName;
 		this.observationResult = observationResult;

@@ -1,71 +1,69 @@
 package edu.rice.system;
 
-import java.util.ArrayList;
-
-import com.github.andrewoma.dexx.collection.HashMap;
+import java.util.HashMap;
+import java.util.LinkedList;
 
 import edu.rice.metadata.MetadataManager;
+import edu.rice.utils.Constants;
 
 public class Controller {
 
-	// This HashMap keeps track of all seen Machines and Dimensions so far.
-	HashMap<Integer, boolean[]> machineDimensions;
-
-	// This HashMap keeps track of the started Threads for Machine+Dimension .
-	HashMap<Integer, Thread[]> machineDimTheads;
-
 	// Window for each machine-dimension - First access the machine and then an
 	// Array of ArrayList.
-	HashMap<Integer, ArrayList<Double>[]> windows;
+	static HashMap<Integer, LinkedList<Double>> windowsMap=new HashMap<Integer, LinkedList<Double>>();;
 
 	private Controller() {
 		// Reads the metadata and have it ready for use.
 		MetadataManager.getInstance().readMetaData("./src/main/resources/molding_machine_10M.metadata.nt");
-
 	}
 
-	static class SingletonHolder {
+	static class ControllerHolder {
 		static final Controller instance = new Controller();
 	}
 
 	public static Controller getInstance() {
-		return SingletonHolder.instance;
+		return ControllerHolder.instance;
 	}
 
 	// we call each time this method
 	public void pushData(int machineNr, int dimensionNr, int timestampNr, double value) {
 
-		if (!machineDimensions.containsKey(machineNr)) {
-			HashMap<Integer, boolean[]> machineDimensions = new HashMap<Integer, boolean[]>();
-			boolean[] seenDimensions=new boolean[121];
-			for (int i = 0; i < seenDimensions.length; i++) {
-				seenDimensions[i]=false;
+		int machine_Dimension_ID = machineNr * 10000 + dimensionNr;
+
+		// First check if we see this machine for the first time
+		if (!windowsMap.containsKey(machine_Dimension_ID)) {
+
+			LinkedList<Double> d_windows = new LinkedList<Double>();
+			// add the first value;
+			d_windows.add(value);
+			// put the array list in to the map
+			windowsMap.put(machine_Dimension_ID, d_windows);
+
+		} else {
+			// if it is not the first time.
+			LinkedList<Double> tmp = windowsMap.get(machine_Dimension_ID);
+			tmp.add(value);
+			// put it back 
+			windowsMap.put(machine_Dimension_ID, tmp);
+
+			// then check if the window is filled up for this dimension
+			if (windowsMap.get(machine_Dimension_ID).size() == Constants.Window_Size) {
+				
+				LinkedList<Double> m_window = windowsMap.get(machine_Dimension_ID);
+				
+				System.out.println("Machine_" + machineNr +"_"+dimensionNr+"  Window:"+m_window.toString());
+				
+				m_window.remove();
+				// put it back 
+				windowsMap.put(machine_Dimension_ID, tmp);
 			}
 
-			
-			
-			machineDimensions.put(machineNr, seenDimensions);
-			
-			
+			// Then if we see this machine before, then check if we saw this
+			// dimension before.
+			// if yes, check if the window is filled up and if yes then just send
+			// the new data value, if no add the new data item into the list.
+
 		}
-
-		// First check if we saw before this machine.
-
-		// If yes, then check if the window is filled up for this dimension of
-		// this machine
-
-		// If not we should create 3 HashMap for this machine
-
-		// Then if we see this machine before, then check if we saw this
-		// dimension before.
-		// if yes, check if the window is filled up and if yes then just send
-		// the new data value, if no add the new data item into the list.
-
 	}
-
-	// just for testing.
-	public static void main(String[] args) {
-
-	}
-
+	
 }
