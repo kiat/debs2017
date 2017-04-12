@@ -8,6 +8,8 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Scanner;
 
+import java.util.LinkedList;
+
 import edu.rice.output.OutputGenerator;
 import edu.rice.utils.Constants;
 
@@ -15,10 +17,6 @@ public class KMeans extends Thread {
 
 	// Review this logic:
 	private int timeStampCounter = 0;
-
-	// Information about the machine:
-	int machineNumber;
-	int dimensionNumber;
 
 	// DELETE THIS:
 	private boolean printDebugInfo = false;
@@ -48,11 +46,7 @@ public class KMeans extends Thread {
 	double resultThreshold = -1;
 
 	// Basic Constructor: Just passes the parameters:
-	public KMeans(int _machineNumber, int _dimensionNumber, int _numClusters, double _thresholdProbability) {
-
-		// Properties related to the specific machine:
-		this.machineNumber = _machineNumber;
-		this.dimensionNumber = _dimensionNumber;
+	public KMeans(int _numClusters, double _thresholdProbability) {
 
 		// Older Code:
 		// Initialize the data structures:
@@ -84,17 +78,17 @@ public class KMeans extends Thread {
 		this.performAllCalculations();
 	}
 
-	// each time we get a new value we call this method
-	// this method should rerun the program and report the anomalies.
-	public void newSingleValue(double value) {
-
-		points.remove(0);
-		points.add(new Point(value));
-
-		this.timeStampCounter = this.timeStampCounter + 1;
-
-		this.performAllCalculations();
-	}
+//	// each time we get a new value we call this method
+//	// this method should rerun the program and report the anomalies.
+//	public void newSingleValue(double value) {
+//
+//		points.remove(0);
+//		points.add(new Point(value));
+//
+//		this.timeStampCounter = this.timeStampCounter + 1;
+//
+//		this.performAllCalculations();
+//	}
 
 	public void performAllCalculations() {
 		// New Bug:
@@ -146,16 +140,13 @@ public class KMeans extends Thread {
 
 		boolean hasAnomalies = this.performAnomalyDetection(NUMCLUSTERS, SMALLERWINDOW, THRESHOLD);
 		if (hasAnomalies) {
-			// System.out.println(machineNumber+ ", " +dimensionNumber+ ", " +
-			// this.getThreshold()+ ", " +(timeStampCounter + NUMPOINTS -
-			// SMALLERWINDOW - 1));
+			
+			 System.out.println(this.getThreshold()+ ", " +(timeStampCounter + NUMPOINTS - SMALLERWINDOW - 1));
 
 			// This is the Anomaly Output
-			System.out.println(OutputGenerator.getInstance().outputAnomaly(machineNumber, dimensionNumber, getThreshold(), (timeStampCounter + NUMPOINTS - SMALLERWINDOW - 1)));
+//			System.out.println(OutputGenerator.getInstance().outputAnomaly(machineNumber, dimensionNumber, getThreshold(), (timeStampCounter + NUMPOINTS - SMALLERWINDOW - 1)));
 
-			// System.out.println(OutputGenerator.getInstance().outputAnomaly(machineNumber,
-			// dimensionNumber, this.getThreshold(), (timeStampCounter +
-			// NUMPOINTS - SMALLERWINDOW - 1)));
+			 
 		}
 	}
 
@@ -358,7 +349,7 @@ public class KMeans extends Thread {
 	public static void main(String[] args) {
 
 		// Parameters provided by DEBS:
-		int numPoints = 10; // windowSize
+		int windowSize = 10; // windowSize
 		int numClusters = 10; // NOTE: Change this appropriately
 
 		// Parameters for anomaly detection:
@@ -368,7 +359,7 @@ public class KMeans extends Thread {
 		ArrayList<Double> _points = new ArrayList<Double>();
 
 		// This is how "KMeans" should be run for each window:
-		KMeans kmeans = new KMeans(-1, -1, numClusters, _thresholdProbability);
+		KMeans kmeans = new KMeans(numClusters, _thresholdProbability);
 
 		try {
 			Scanner scan = new Scanner(new File("./src/main/resources/31.csv"));
@@ -380,20 +371,37 @@ public class KMeans extends Thread {
 				_points.add(Double.parseDouble(tokens[tokens.length - 1]));
 
 				// When window size matches, run algorithm:
-				if (_points.size() == numPoints) {
+				if (_points.size() == windowSize) {
 					break;
 				}
 			}
 
 			// First Call:
 			kmeans.newSingleValue(_points);
+			
+			LinkedList<Double> d_windows = new LinkedList<Double>();
+			
 
 			while (scan.hasNextLine()) {
 				String line = scan.nextLine();
-				String[] tokens = line.split(";");
+				String[] tokens = line.split(";");				
+				
+				if(d_windows.size() == Constants.Window_Size){
+					
+					ArrayList<Double> convertedWindow=new ArrayList<Double>(d_windows); 
+					kmeans.newSingleValue(convertedWindow);
+					System.out.println(convertedWindow);
+					
+					d_windows.remove();
 
+				}else{
+					d_windows.add(Double.parseDouble(tokens[tokens.length - 1]));
+					
+				}
+				
+				
 				// One point at a time:
-				kmeans.newSingleValue(Double.parseDouble(tokens[tokens.length - 1]));
+//				kmeans.newSingleValue(Double.parseDouble(tokens[tokens.length - 1]));
 			}
 
 		} catch (FileNotFoundException fnfe) {
