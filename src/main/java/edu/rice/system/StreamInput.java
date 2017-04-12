@@ -10,7 +10,7 @@ import com.rabbitmq.client.Channel;
 import com.rabbitmq.client.Connection;
 import com.rabbitmq.client.ConnectionFactory;
 
-public class ReadingFromFileAndPushing_ObservationGroupMessages {
+public class StreamInput {
     public static void main(String[] args) {
 
         ConnectionFactory factory = new ConnectionFactory();
