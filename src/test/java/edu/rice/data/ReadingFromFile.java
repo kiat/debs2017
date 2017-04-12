@@ -6,9 +6,11 @@ import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
 import java.io.StringReader;
+import java.text.ParseException;
 import java.util.LinkedList;
 import java.util.Scanner;
 
+import edu.rice.system.Controller;
 import org.apache.jena.query.Query;
 import org.apache.jena.query.QueryExecution;
 import org.apache.jena.query.QueryExecutionFactory;
@@ -39,8 +41,7 @@ public class ReadingFromFile {
 	public static final Query query = QueryFactory.create(queryString);
 	public static Model model = ModelFactory.createDefaultModel();
 
-	
-	public static void main(String[] args) {
+	public static void main(String[] args) throws ParseException {
 
 	    // open the file with the data
 		File file = new File("./src/main/resources/molding_machine_10M.nt");
@@ -76,8 +77,8 @@ public class ReadingFromFile {
         long startTime = System.nanoTime();
 
 		for(byte[] b : data ) {
-		    //processRDFMessage(b);
-            RDFParser.processData(b);
+		    processRDFMessage(b);
+            //RDFParser.processData(b);
         }
 
 		// End of time calculation
@@ -88,55 +89,48 @@ public class ReadingFromFile {
 
 	}
 
-	private static void processRDFMessage(byte[] bytes) {
-		
-		model.removeAll();
-		model.read(new ByteArrayInputStream(bytes), null, "N-TRIPLES");
+    private static void processRDFMessage(byte[] bytes) {
 
-		// String queryStringBackup = PREFIXES
-		// +
-		// " SELECT ?machine ?observedDimension  ?time    ?outputLiteral WHERE { "
-		// +
-		// " ?ObservationGroup rdf:type                  i40:MoldingMachineObservationGroup   . "
-		// + " ?ObservationGroup i40:machine            ?machine . "
-		// + " ?ObservationGroup ssn:observationResultTime ?time  . "
-		// + " ?time             iotcore:valueLiteral   ?timeValue  . "
-		// // + " ?ObservationGroup i40:observedCycle      ?cycles  . "
-		// // + " ?cycles           iotcore:valueLiteral   ?count . "
-		// + " ?ObservationGroup i40:contains           ?observation . " +
-		// " ?observation      ssn:observedProperty   ?observedDimension ."
-		// + " ?observation      ssn:observationResult  ?output . " +
-		// " ?output           ssn:hasValue           ?outputValue . "
-		// + " ?outputValue      iotcore:valueLiteral   ?outputLiteral . " +
-		// " } ORDER BY ASC(?timeValue)";
+        int machineNr = 0;
+        int dimensionNr = 0;
+        int timestampNr = 0;
+        double value = 0;
 
-		try (QueryExecution qexec = QueryExecutionFactory.create(query, model)) {
-			ResultSet results = qexec.execSelect();
 
-			for (; results.hasNext();) {
-				QuerySolution soln = results.nextSolution();
-				// Get a result variable by name.
-				RDFNode observedDimension = soln.get("observedDimension");
-				RDFNode time = soln.get("time");
-				RDFNode machine = soln.get("machine");
+//		KMeans myKmeans= new KMeans();
 
-				Literal outputLiteral = soln.getLiteral("outputLiteral");
-				Object myLiteralObject = outputLiteral.getValue();
+        model.removeAll();
+        model.read(new ByteArrayInputStream(bytes), null, "N-TRIPLES");
 
-				if (myLiteralObject instanceof Double)
-					System.out.println(machine.asResource().getLocalName() + "," + observedDimension.asResource().getLocalName() + "," + time.asResource().getLocalName() + ","
-							+ outputLiteral.getDouble());
+        try (QueryExecution qexec = QueryExecutionFactory.create(query, model)) {
+            ResultSet results = qexec.execSelect();
 
-				if (myLiteralObject instanceof Integer)
-					System.out.println(machine.asResource().getLocalName() + "," + observedDimension.asResource().getLocalName() + "," + time.asResource().getLocalName() + ","
-							+ outputLiteral.getInt());
+            for (; results.hasNext();) {
+                QuerySolution soln = results.nextSolution();
+                // Get a result variable by name.
+                RDFNode observedDimension = soln.get("observedDimension");
+                RDFNode time = soln.get("time");
+                RDFNode machine = soln.get("machine");
 
-				if (myLiteralObject instanceof String)
-					System.out.println(machine.asResource().getLocalName() + "," + observedDimension.asResource().getLocalName() + "," + time.asResource().getLocalName() + ","
-							+ outputLiteral);
+                Literal outputLiteral = soln.getLiteral("outputLiteral");
+                Object myLiteralObject = outputLiteral.getValue();
 
-			}
-		}
-	}
+                machineNr = Integer.parseInt(machine.asResource().getLocalName().substring(8));
+                dimensionNr = Integer.parseInt(observedDimension.asResource().getLocalName().substring(1).split("_")[1]);
+                timestampNr = Integer.parseInt(time.asResource().getLocalName().split("_")[1]);
+
+
+
+                if (myLiteralObject instanceof Double) {
+                    value = outputLiteral.getDouble();
+//					System.out.println(machineNr+ "," + dimensionNr + "," + timestampNr + "," + value);
+
+                    Controller. getInstance().pushData(machineNr, dimensionNr, timestampNr, value);
+
+                }
+
+            }
+        }
+    }
 
 }
