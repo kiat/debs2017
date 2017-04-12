@@ -6,6 +6,7 @@ import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
 import java.io.StringReader;
+import java.text.ParseException;
 import java.util.Scanner;
 
 import org.apache.jena.query.Query;
@@ -44,7 +45,7 @@ public class ReadingRDFJenaFromFile {
 	public static Model model = ModelFactory.createDefaultModel();
 
 
-	public static void main(String[] args) {
+	public static void main(String[] args) throws ParseException {
 		long startTime = 0;
 
 		// NOW read the objects from memory
@@ -68,6 +69,7 @@ public class ReadingRDFJenaFromFile {
 						// TODO: You can change the method to check the
 						// performance.
 						processRDFMessage(segment.getBytes());
+//						RDFParser.processData(segment.getBytes());
 					}
 
 					segment = "";
@@ -81,8 +83,8 @@ public class ReadingRDFJenaFromFile {
 		}
 
 		// End of time calculation
-		long endTime = System.nanoTime();
-		double elapsedTotalTime = (endTime - startTime) / 1000000000.0;
+		//long endTime = System.nanoTime();
+		//double elapsedTotalTime = (endTime - startTime) / 1000000000.0;
 
 //		System.out.println("Elapsed Time " + String.format("%.9f", elapsedTotalTime));
 

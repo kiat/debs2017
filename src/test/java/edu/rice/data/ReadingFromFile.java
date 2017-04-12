@@ -79,7 +79,7 @@ public class ReadingFromFile {
         long startTime = System.nanoTime();
 
 		for(byte[] b : data ) {
-//		    processRDFMessage(b);
+		    //processRDFMessage(b);
             RDFParser.processData(b);
         }
 
