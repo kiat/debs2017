@@ -9,12 +9,15 @@ public class CircularQueue {
 	// Size of the queue:
 	private int countElements = 0;
 	
-	// Points:
+	//TODO This needs to go copying objects is expensive, having an array of objects is like having an array of pointers so you need to accesses to get the value, if you have an array of primitive types that's a nice chunk of memory...
 	private Point[] points;
+
+	//TODO don't need this too expensive to keep the first and the next just go and overwrite the values.
     private int first, next;
 	
 	
 	// Default constructor:
+	//TODO there should be a copy constructor that copies the the data with Arrays.copyOf less expensive
 	public CircularQueue(int _windowSize) {
 		this.windowSize = _windowSize;
 		this.countElements = 0;
@@ -30,16 +33,19 @@ public class CircularQueue {
 	}
 	
 	// Check if queue is empty:
+	//TODO why do you need this?
 	public boolean empty () {
         return (countElements == 0);
     } 
 
 	// Size of the queue:
+	//TODO Also might not be required if you have full
 	public int size() {
 		return countElements;
 	}
 
 	// Insert a point:
+	//TODO this is to complicated the insert should just calculate the new next and write the value
 	public void insert (Double value) {
 		if (!full()) {
 			countElements++;
@@ -53,6 +59,7 @@ public class CircularQueue {
 
 	
 	// Delete a point:
+	//TODO this is not required should be removed, implementing it might cause performance issues
     public Double remove () {
 		if (!empty()) {
 			countElements--;
@@ -76,6 +83,7 @@ public class CircularQueue {
     }		
 	
 	// Get point at any index:
+	//TODO after you make the changes this needs to be updated
 	public Point get(int index) {
 		if (index < 0) {
 			return null;
