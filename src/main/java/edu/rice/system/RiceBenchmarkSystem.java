@@ -40,6 +40,10 @@ class RiceBenchmarkSystem extends DebsParrotBenchmarkSystem {
 			+ " ?output           ssn:hasValue           ?outputValue . " + " ?outputValue      iotcore:valueLiteral   ?outputLiteral . " + " }  ORDER BY ASC(?timeValue)";
 	
 	
+	// Here we send the generated output anomalies to their bus system.
+	protected void sendData(String message) {
+	
+	}
 
 		
 	
