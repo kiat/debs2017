@@ -82,6 +82,18 @@ public class CircularQueue {
         System.out.print("]\n");    
     }		
 	
+    
+
+    public String toString() {
+        String tmp=("[ ");
+        for (int i = 0; i < countElements; i++) {
+        	tmp+=(String.format("%.2f", points[(first + i) % windowSize].getX()) + " ");
+		}
+        tmp+=("]");    
+        return tmp;
+    }
+    
+    
 	// Get point at any index:
 	//TODO after you make the changes this needs to be updated
 	public Point get(int index) {

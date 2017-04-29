@@ -10,9 +10,7 @@ import java.text.ParseException;
 import java.util.LinkedList;
 import java.util.Scanner;
 
-import edu.rice.rdfParser.RDFParser;
 import edu.rice.system.Controller;
-
 import org.apache.jena.query.Query;
 import org.apache.jena.query.QueryExecution;
 import org.apache.jena.query.QueryExecutionFactory;
@@ -79,7 +77,7 @@ public class ReadingFromFile {
         long startTime = System.nanoTime();
 
 		for(byte[] b : data ) {
-		    //processRDFMessage(b);
+//		    processRDFMessage(b);
             RDFParser.processData(b);
         }
 

@@ -1,41 +1,24 @@
-package edu.rice.system;
+package edu.rice.utils;
 
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
-import java.util.concurrent.TimeoutException;
+import java.text.ParseException;
 
-import com.rabbitmq.client.Channel;
-import com.rabbitmq.client.Connection;
-import com.rabbitmq.client.ConnectionFactory;
+import edu.rice.parser.RDFParser;
 
-public class StreamInput {
+public class OutputTest {
     public static void main(String[] args) {
 
-        ConnectionFactory factory = new ConnectionFactory();
-
-        factory.setHost("localhost");
-
         try {
-
-            // Connect to the RabbitMQ
-            Connection conn = factory.newConnection();
-            Channel channel = conn.createChannel();
-            channel.queueDeclarePassive("hobbit.datagen-system.exp1").getQueue();
-
             // Open the file and buffer it
-//            File file = new File(ClassLoader.getSystemClassLoader().getResource("molding_machine_10M.nt").getFile());
-            File file = new File("/home/kia/Desktop/Debs2017_data/19.04.2017.10molding_machine_5000dp/10molding_machine_5000dp.nt");
-//            File file = new File("/home/kia/Desktop/Debs2017_data/19.04.2017.10molding_machine_5000dp/10molding_machine_5000dp.nt");
-            
-            
+            File file = new File("molding_machine_5000dp.nt");
             BufferedReader br = new BufferedReader(new FileReader(file));
 
             String line;
             String segment = "";
             String observationGroupTmp = "";
-
 
             // We get a random number and then read the text file line by line.
             // We send each time a random number of lines as a text message to
@@ -51,7 +34,8 @@ public class StreamInput {
 
                     if (segment.compareTo("")!=0) {
                         byte[] messageBodyBytes = segment.getBytes();
-                        channel.basicPublish("", "hobbit.datagen-system.exp1", null, messageBodyBytes);
+                        RDFParser.processData(messageBodyBytes);
+                    
                     }
 
                     segment = "";
@@ -66,14 +50,13 @@ public class StreamInput {
             
             // one last send out  
             byte[] messageBodyBytes = segment.getBytes();
-            channel.basicPublish("", "hobbit.datagen-system.exp1", null, messageBodyBytes);
+            RDFParser.processData(messageBodyBytes);
 
 
             br.close();
-            channel.close();
-            conn.close();
+            
 
-        } catch (IOException | TimeoutException e) {
+        } catch (IOException | ParseException  e) {
             e.printStackTrace();
         }
 

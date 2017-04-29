@@ -6,7 +6,6 @@ import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
 import java.io.StringReader;
-import java.text.ParseException;
 import java.util.Scanner;
 
 import org.apache.jena.query.Query;
@@ -22,8 +21,6 @@ import org.apache.jena.rdf.model.RDFNode;
 
 import edu.rice.kmeans.KMeans;
 import edu.rice.system.Controller;
-import edu.rice.system.RiceBenchmarkSystem;
-
 
 public class ReadingRDFJenaFromFile {
 
@@ -45,7 +42,7 @@ public class ReadingRDFJenaFromFile {
 	public static Model model = ModelFactory.createDefaultModel();
 
 
-	public static void main(String[] args) throws ParseException {
+	public static void main(String[] args) {
 		long startTime = 0;
 
 		// NOW read the objects from memory
@@ -69,7 +66,6 @@ public class ReadingRDFJenaFromFile {
 						// TODO: You can change the method to check the
 						// performance.
 						processRDFMessage(segment.getBytes());
-//						RDFParser.processData(segment.getBytes());
 					}
 
 					segment = "";
@@ -83,8 +79,8 @@ public class ReadingRDFJenaFromFile {
 		}
 
 		// End of time calculation
-		//long endTime = System.nanoTime();
-		//double elapsedTotalTime = (endTime - startTime) / 1000000000.0;
+		long endTime = System.nanoTime();
+		double elapsedTotalTime = (endTime - startTime) / 1000000000.0;
 
 //		System.out.println("Elapsed Time " + String.format("%.9f", elapsedTotalTime));
 
@@ -98,6 +94,7 @@ public class ReadingRDFJenaFromFile {
 		double value = 0;
 
 		
+//		KMeans myKmeans= new KMeans(); 
 		
 		model.removeAll();
 		model.read(new ByteArrayInputStream(bytes), null, "N-TRIPLES");
@@ -126,10 +123,6 @@ public class ReadingRDFJenaFromFile {
 //					System.out.println(machineNr+ "," + dimensionNr + "," + timestampNr + "," + value);
 					
 					Controller. getInstance().pushData(machineNr, dimensionNr, timestampNr, value);
-					
-					
-//					RiceBenchmarkSystem.getInstance().send(bytes);
-//					RiceBenchmarkSystem.getInstance().send("");
 					
 				}
 

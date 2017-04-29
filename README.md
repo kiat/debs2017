@@ -5,21 +5,17 @@
 # How to compile and build a single jar file 
 
 
-	mvn clean compile assembly:single
+	mvn clean package 
 
 
-# Running 
 
-	java -XX:-UseGCOverheadLimit  -Xms4g -Xmx15g  -cp ./target/debs2017rice-1.0-SNAPSHOT-jar-with-dependencies.jar edu.rice.readingRDF.ReadingRDFMain
-
- 
 
 
 # Push a Docker Image 
 
-	docker build -t git.project-hobbit.eu:4567/dimitrijejankov/adapter  .
+	docker build -t git.project-hobbit.eu:4567/dj16/rice  .
 
 	docker login git.project-hobbit.eu:4567
 
-	docker push git.project-hobbit.eu:4567/dimitrijejankov/adapter 
+	docker push git.project-hobbit.eu:4567/dj16/rice 
 

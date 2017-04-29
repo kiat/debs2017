@@ -1,34 +1,22 @@
-package edu.rice.system;
+package edu.rice.data;
 
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
-import java.util.concurrent.TimeoutException;
+import java.text.ParseException;
 
-import com.rabbitmq.client.Channel;
-import com.rabbitmq.client.Connection;
-import com.rabbitmq.client.ConnectionFactory;
+import edu.rice.parser.RDFParser;
 
-public class StreamInput {
+public class DataParsingTest {
     public static void main(String[] args) {
 
-        ConnectionFactory factory = new ConnectionFactory();
-
-        factory.setHost("localhost");
 
         try {
 
-            // Connect to the RabbitMQ
-            Connection conn = factory.newConnection();
-            Channel channel = conn.createChannel();
-            channel.queueDeclarePassive("hobbit.datagen-system.exp1").getQueue();
-
             // Open the file and buffer it
 //            File file = new File(ClassLoader.getSystemClassLoader().getResource("molding_machine_10M.nt").getFile());
-            File file = new File("/home/kia/Desktop/Debs2017_data/19.04.2017.10molding_machine_5000dp/10molding_machine_5000dp.nt");
-//            File file = new File("/home/kia/Desktop/Debs2017_data/19.04.2017.10molding_machine_5000dp/10molding_machine_5000dp.nt");
-            
+        	File file = new File("/home/kia/Desktop/Debs2017_data/19.04.2017.10molding_machine_5000dp/10molding_machine_5000dp.nt");
             
             BufferedReader br = new BufferedReader(new FileReader(file));
 
@@ -47,13 +35,20 @@ public class StreamInput {
                 // split the string by space character.
                 String[] tripleParts = line.split(" ");
 
-                if (tripleParts[0].contains("Group") && tripleParts[0].compareTo(observationGroupTmp) !=0 ) {
+                if (tripleParts[0].contains("http://project-hobbit.eu/resources/debs2017#ObservationGroup") && tripleParts[0].compareTo(observationGroupTmp) !=0 ) {
 
                     if (segment.compareTo("")!=0) {
                         byte[] messageBodyBytes = segment.getBytes();
-                        channel.basicPublish("", "hobbit.datagen-system.exp1", null, messageBodyBytes);
+                        RDFParser.processData(messageBodyBytes);                      
                     }
 
+                	System.out.println(segment);
+                	
+                	System.out.println("\n\n#########################");
+                	System.out.println("#########################");
+                	System.out.println("#########################\n\n");
+                	
+                	
                     segment = "";
                     observationGroupTmp = tripleParts[0];
                 }
@@ -66,14 +61,12 @@ public class StreamInput {
             
             // one last send out  
             byte[] messageBodyBytes = segment.getBytes();
-            channel.basicPublish("", "hobbit.datagen-system.exp1", null, messageBodyBytes);
+            RDFParser.processData(messageBodyBytes);
 
 
             br.close();
-            channel.close();
-            conn.close();
-
-        } catch (IOException | TimeoutException e) {
+            
+        } catch (IOException | ParseException e) {
             e.printStackTrace();
         }
 

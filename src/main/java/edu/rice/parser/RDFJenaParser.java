@@ -1,7 +1,6 @@
-package edu.rice.system;
+package edu.rice.parser;
 
 import java.io.ByteArrayInputStream;
-import java.text.ParseException;
 
 import org.apache.jena.query.Query;
 import org.apache.jena.query.QueryExecution;
@@ -14,10 +13,9 @@ import org.apache.jena.rdf.model.Model;
 import org.apache.jena.rdf.model.ModelFactory;
 import org.apache.jena.rdf.model.RDFNode;
 
-import edu.rice.rdfParser.RDFParser;
-import edu.rice.system.DebsParrotBenchmarkSystem;
+import edu.rice.system.Controller;
 
-public class RiceBenchmarkSystem extends DebsParrotBenchmarkSystem {
+public class RDFJenaParser {
 
 	public static final String PREFIXES = "PREFIX iotcore: <http://www.agtinternational.com/ontologies/IoTCore#>  "
 			+ "PREFIX ar:   <http://www.agtinternational.com/ontologies/DEBSAnalyticResults#> " + "PREFIX debs2017: <http://project-hobbit.eu/resources/debs2017>   "
@@ -35,83 +33,43 @@ public class RiceBenchmarkSystem extends DebsParrotBenchmarkSystem {
 
 	public static final Query query = QueryFactory.create(queryString);
 	public static Model model = ModelFactory.createDefaultModel();
-	
-	
-	private static RiceBenchmarkSystem instance;
-	
-	protected RiceBenchmarkSystem() throws Exception {
-		super();
-	    this.init();
-	}
-	
-	public static RiceBenchmarkSystem getInstance() throws Exception {
-		if(instance == null) {
-			instance = new RiceBenchmarkSystem();
-		}
-		
-		return instance;
-	}
-	
-	
-	
-    @Override
-    protected void processData(byte[] bytes) {
-    	
-        try {
-			RDFParser.processData(bytes);
-		} catch (ParseException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-        
-        
-        
 
-//
-//		int machineNr = 0;
-//		int dimensionNr = 0;
-//		int timestampNr = 0;
-//		double value = 0;
-//
-//		
-//		
-//		model.removeAll();
-//		model.read(new ByteArrayInputStream(bytes), null, "N-TRIPLES");
-//
-//		try (QueryExecution qexec = QueryExecutionFactory.create(query, model)) {
-//			ResultSet results = qexec.execSelect();
-//
-//			for (; results.hasNext();) {
-//				QuerySolution soln = results.nextSolution();
-//				// Get a result variable by name.
-//				RDFNode observedDimension = soln.get("observedDimension");
-//				RDFNode time = soln.get("time");
-//				RDFNode machine = soln.get("machine");
-//
-//				Literal outputLiteral = soln.getLiteral("outputLiteral");
-//				Object myLiteralObject = outputLiteral.getValue();
-//
-//				machineNr = Integer.parseInt(machine.asResource().getLocalName().substring(8));
-//				dimensionNr = Integer.parseInt(observedDimension.asResource().getLocalName().substring(1).split("_")[1]);
-//				timestampNr = Integer.parseInt(time.asResource().getLocalName().split("_")[1]);
-//
-//				
-//				
-//				if (myLiteralObject instanceof Double) {
-//					value = outputLiteral.getDouble();
-//if(dimensionNr==106)
-//					System.out.println(machineNr+ "," + dimensionNr + "," + timestampNr + "," + value);
-//					
-//					Controller. getInstance().pushData(machineNr, dimensionNr, timestampNr, value);
-//					
-//					
-//				}else{
-//					
-//					
-//				}
-//
-//			}
-//		}
-			
-    }
+	public static void processData(byte[] bytes) {
+
+		int machineNr = 0;
+		int dimensionNr = 0;
+		int timestampNr = 0;
+		double value = 0;
+
+		model.removeAll();
+		model.read(new ByteArrayInputStream(bytes), null, "N-TRIPLES");
+
+		try (QueryExecution qexec = QueryExecutionFactory.create(query, model)) {
+			ResultSet results = qexec.execSelect();
+
+			for (; results.hasNext();) {
+				QuerySolution soln = results.nextSolution();
+				// Get a result variable by name.
+				RDFNode observedDimension = soln.get("observedDimension");
+				RDFNode time = soln.get("time");
+				RDFNode machine = soln.get("machine");
+
+				Literal outputLiteral = soln.getLiteral("outputLiteral");
+				Object myLiteralObject = outputLiteral.getValue();
+
+				machineNr = Integer.parseInt(machine.asResource().getLocalName().substring(8));
+				dimensionNr = Integer.parseInt(observedDimension.asResource().getLocalName().substring(1).split("_")[1]);
+				timestampNr = Integer.parseInt(time.asResource().getLocalName().split("_")[1]);
+
+				if (myLiteralObject instanceof Double) {
+					value = outputLiteral.getDouble();
+
+					// we push the data to the controller from here.
+					 Controller.getInstance().pushData(machineNr, dimensionNr,  timestampNr, value);
+				}
+
+			}
+		}
+
+	}
 }

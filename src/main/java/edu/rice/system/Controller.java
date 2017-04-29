@@ -1,6 +1,7 @@
 package edu.rice.system;
 
 import java.util.HashMap;
+import java.util.LinkedList;
 
 import edu.rice.kmeans.CircularQueue;
 import edu.rice.kmeans.KMeans;
@@ -13,13 +14,19 @@ public class Controller {
 	// Window for each machine-dimension - First access the machine and then an
 	// Array of ArrayList.
 	static HashMap<Integer, CircularQueue> windowsMap = new HashMap<Integer, CircularQueue>();
-	KMeans singleKMeans;
+	static HashMap<Integer, LinkedList<Integer>> timestamps = new HashMap<Integer, LinkedList<Integer>>();
+
+	static int counter = 1;
 
 	private Controller() {
 		// Reads the metadata and have it ready for use.
-		MetadataManager.getInstance().readMetaData("./src/main/resources/molding_machine_10M.metadata.nt");
 
-		singleKMeans = new KMeans();
+
+		//		 MetadataManager.getInstance().readMetaData("./molding_machine_5000dp.metadata.data");
+
+		// final Metadata is 1000molding_machine.metadata.nt
+		MetadataManager.getInstance().readMetaData("./1000molding_machine.metadata.data");
+
 	}
 
 	static class ControllerHolder {
@@ -31,63 +38,75 @@ public class Controller {
 	}
 
 	// we call each time this method
-	public void pushData(int machineNr, int dimensionNr, int timestampNr, double value) {
+	public synchronized void pushData(int machineNr, int dimensionNr, int timestampNr, double value) {
 
-		int machine_Dimension_ID = machineNr * 10000 + dimensionNr;
+		// if this is not a statefull dimension then return
+		if (MetadataManager.getInstance().getClusterNr(machineNr, dimensionNr) == 0)
+			return;
+		//
+		// if(machineNr==8 && dimensionNr==83)
+		// System.out.println(machineNr +","+ dimensionNr+","+ timestampNr +","+
+		// value );
 
-		// First check if we see this machine for the first time
+		int machine_Dimension_ID = machineNr * 100000 + dimensionNr;
+
+		// First check if we see this machine_dimension for the first time
 		if (!windowsMap.containsKey(machine_Dimension_ID)) {
 
-			CircularQueue d_windows = new CircularQueue(Constants.Window_Size);
+			CircularQueue d_windows = new CircularQueue(Constants.WINDOW_SIZE);
+			LinkedList<Integer> tmp_timestamp = new LinkedList<Integer>();
 
 			// add the first value;
 			d_windows.insert(value);
+			tmp_timestamp.add((Integer) timestampNr);
+
 			// put the array list in to the map
 			windowsMap.put(machine_Dimension_ID, d_windows);
+			timestamps.put(machine_Dimension_ID, tmp_timestamp);
 
 		} else {
 			// if it is not the first time.
 			CircularQueue tmp = windowsMap.get(machine_Dimension_ID);
 			tmp.insert(value);
+
+			LinkedList<Integer> tmp_timestamp = timestamps.get(machine_Dimension_ID);
+			tmp_timestamp.add((Integer) timestampNr);
+
 			// put it back
 			windowsMap.put(machine_Dimension_ID, tmp);
+			timestamps.put(machine_Dimension_ID, tmp_timestamp);
 
 			// then check if the window is filled up for this dimension
-			if (windowsMap.get(machine_Dimension_ID).size() == Constants.Window_Size) {
+			if (windowsMap.get(machine_Dimension_ID).size() == Constants.WINDOW_SIZE) {
 
 				CircularQueue m_window = windowsMap.get(machine_Dimension_ID);
+				LinkedList<Integer> tmp_timestamp_ifFull = timestamps.get(machine_Dimension_ID);
 
+				int numberOfClusters = MetadataManager.getInstance().getClusterNr(machineNr, dimensionNr);
 
-				if (MetadataManager.getInstance().getClusterNr(machineNr, dimensionNr) != 0) {
+				// then do the Kmeans and Anomaly Detection.
+				KMeans singleKMeans = new KMeans();
+				boolean hasAnomalies = singleKMeans.performAllCalculation(numberOfClusters, m_window, 0.005);
 
-					boolean hasAnomalies = singleKMeans.performAllCalculation(MetadataManager.getInstance().getClusterNr(machineNr, dimensionNr),
-							Constants.maxClusteringIterations, Constants.clusteringPrecision, m_window, Constants.SMALLERWINDOW,
-							MetadataManager.getInstance().getThreshold(machineNr, dimensionNr));
+				if (hasAnomalies) {
+					double finalThreshold = singleKMeans.getThreshold();
 
-					if(dimensionNr==106)
-						System.out.println(MetadataManager.getInstance().getClusterNr(machineNr, dimensionNr));
+//					String output = OutputGenerator.anomalyCounter + "," + machineNr + "," + dimensionNr + "," + numberOfClusters + ",  " + finalThreshold + " ,  "
+//							+ m_window.toString() + " Timestamps " + tmp_timestamp_ifFull.toString();
+//					
+//					System.out.println(output);
 					
-					if (hasAnomalies) {
-						double finalThreshold = singleKMeans.getThreshold();
-						OutputGenerator.getInstance().outputAnomaly(machineNr, dimensionNr, finalThreshold, (timestampNr - Constants.SMALLERWINDOW));
-
-//						System.out.println(OutputGenerator.getInstance().outputAnomaly(machineNr, dimensionNr, finalThreshold, (timestampNr - Constants.SMALLERWINDOW)));
-					}
-
+					OutputGenerator.outputAnomaly(machineNr, dimensionNr, finalThreshold, (int) tmp_timestamp_ifFull.get(Constants.WINDOW_SIZE - Constants.SMALLER_WINDOW - 1));
 				}
 
 				// FIFO remove
 				m_window.remove();
+				tmp_timestamp_ifFull.remove();
 
 				// put it back
 				windowsMap.put(machine_Dimension_ID, tmp);
+				timestamps.put(machine_Dimension_ID, tmp_timestamp_ifFull);
 			}
-
-			// Then if we see this machine before, then check if we saw this
-			// dimension before.
-			// if yes, check if the window is filled up and if yes then just
-			// send
-			// the new data value, if no add the new data item into the list.
 
 		}
 	}
