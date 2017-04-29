@@ -59,7 +59,7 @@ public class DebsParrotBenchmarkSystemRunner {
     public static void main(String... args) throws Exception {
 
     	// TODO: Take thie line out when you run it on platform.
-        setupEnvironment();
+//        setupEnvironment();
 
         
         logger.debug("Running...");

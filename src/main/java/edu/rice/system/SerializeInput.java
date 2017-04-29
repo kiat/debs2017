@@ -24,7 +24,7 @@ public class SerializeInput {
             Channel channel = conn.createChannel();
             channel.queueDeclarePassive("hobbit.datagen-system.exp1").getQueue();
 
-            FileInputStream fileIn = new FileInputStream("../molding_machine_5000dp.ser");
+            FileInputStream fileIn = new FileInputStream("../resources/molding_machine_5000dp.ser");
             ObjectInputStream in = new ObjectInputStream(fileIn);
             data = (LinkedList<byte[]>) in.readObject();
             in.close();
