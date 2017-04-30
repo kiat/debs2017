@@ -3,10 +3,14 @@ package edu.rice.utils;
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileReader;
+import java.nio.ByteBuffer;
+import java.nio.CharBuffer;
+import java.nio.charset.Charset;
+import java.text.ParseException;
 
 import edu.rice.parser.RDFParser;
 
-public class ParserTest {
+public class ParserTest2 {
     public static void main(String[] args) {
 
     	
@@ -43,7 +47,7 @@ public class ParserTest {
 
                     if (segment.compareTo("")!=0) {
                     	byte[] messageBodyBytes = segment.getBytes();
-                    	myParser.processData(messageBodyBytes);
+                    	processData(messageBodyBytes);
                     }
 
                     segment = "";
@@ -54,7 +58,7 @@ public class ParserTest {
             
             // one last send out  
             byte[] messageBodyBytes = segment.getBytes();
-        	myParser.processData(messageBodyBytes);
+        	processData(messageBodyBytes);
 
 //          channel.basicPublish("", "hobbit.datagen-system.exp1", null, messageBodyBytes);
 
@@ -66,4 +70,56 @@ public class ParserTest {
         }
 
     }
+    
+    
+    public static final String NEWLINE = System.getProperty("line.separator");
+
+	public static void processData(byte[] bytes) throws ParseException {
+		
+		
+
+		ByteBuffer byteBuffer = ByteBuffer.wrap(bytes);
+		Charset utf8 = Charset.forName("UTF-8");
+		CharBuffer charBuffer = utf8.decode(byteBuffer);
+
+		int start=0;
+		int end=0;
+		
+		CharBuffer charBuffertmp; 
+		
+		// 6 lines starting an observation group. 
+		for (int j = 0; j < 4; j++) {
+			end = findCharacter(charBuffer, '\n', start);
+			
+			charBuffertmp = charBuffer.subSequence(start ,  end);
+			start=end;
+			end=start+end; 
+			
+			System.out.println(charBuffertmp);
+
+		}
+		
+
+		
+		
+//		while (charBuffer.hasRemaining()) {
+////			int i = parse(charBuffer);
+//			
+//		
+//		}
+
+
+		
+	}
+
+	private static int findCharacter(CharBuffer chars, char c, int start) {
+
+		while (chars.charAt(start) != c) {
+			start++;
+		}
+
+		return start;
+	}
+    
+    
 }

@@ -7,7 +7,7 @@ import java.nio.CharBuffer;
 import java.nio.charset.Charset;
 import java.text.ParseException;
 
-public class RDFParser {
+public class ParseringThread extends Thread{
 
 	private static String lineStart = "<http://project-hobbit.eu/resources/debs2017#";
 	private static int lineStartSkip = lineStart.length();
@@ -47,6 +47,8 @@ public class RDFParser {
 	static double value = 0;
 	static int timestampIndex;
 	static String timestampValue;
+	
+	
 
 	public static void processData(byte[] bytes) throws ParseException {
 
