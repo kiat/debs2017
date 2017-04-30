@@ -22,8 +22,8 @@ public class ParserTest2 {
 
 
             // Open the file and buffer it
-//            File file = new File("/home/kia/Desktop/Debs2017_data/19.04.2017.10molding_machine_5000dp/10molding_machine_5000dp.nt");
-            File file = new File("/home/kia/Desktop/test.nt");
+            File file = new File("/home/kia/Desktop/Debs2017_data/19.04.2017.1molding_machine_5000dp/molding_machine_5000dp.nt");
+//            File file = new File("/home/kia/Desktop/test.nt");
 
             
             BufferedReader br = new BufferedReader(new FileReader(file));
@@ -47,7 +47,7 @@ public class ParserTest2 {
 
                     if (segment.compareTo("")!=0) {
                     	byte[] messageBodyBytes = segment.getBytes();
-                    	processData(messageBodyBytes);
+                    	myParser.processData(messageBodyBytes);
                     }
 
                     segment = "";
@@ -58,7 +58,7 @@ public class ParserTest2 {
             
             // one last send out  
             byte[] messageBodyBytes = segment.getBytes();
-        	processData(messageBodyBytes);
+            myParser.processData(messageBodyBytes);
 
 //          channel.basicPublish("", "hobbit.datagen-system.exp1", null, messageBodyBytes);
 
@@ -72,54 +72,54 @@ public class ParserTest2 {
     }
     
     
-    public static final String NEWLINE = System.getProperty("line.separator");
-
-	public static void processData(byte[] bytes) throws ParseException {
-		
-		
-
-		ByteBuffer byteBuffer = ByteBuffer.wrap(bytes);
-		Charset utf8 = Charset.forName("UTF-8");
-		CharBuffer charBuffer = utf8.decode(byteBuffer);
-
-		int start=0;
-		int end=0;
-		
-		CharBuffer charBuffertmp; 
-		
-		// 6 lines starting an observation group. 
-		for (int j = 0; j < 4; j++) {
-			end = findCharacter(charBuffer, '\n', start);
-			
-			charBuffertmp = charBuffer.subSequence(start ,  end);
-			start=end;
-			end=start+end; 
-			
-			System.out.println(charBuffertmp);
-
-		}
-		
-
-		
-		
-//		while (charBuffer.hasRemaining()) {
-////			int i = parse(charBuffer);
-//			
+//    public static final String NEWLINE = System.getProperty("line.separator");
+//
+//	public static void processData(byte[] bytes) throws ParseException {
 //		
+//		
+//
+//		ByteBuffer byteBuffer = ByteBuffer.wrap(bytes);
+//		Charset utf8 = Charset.forName("UTF-8");
+//		CharBuffer charBuffer = utf8.decode(byteBuffer);
+//
+//		int start=0;
+//		int end=0;
+//		
+//		CharBuffer charBuffertmp; 
+//		
+//		// 6 lines starting an observation group. 
+//		for (int j = 0; j < 4; j++) {
+//			end = findCharacter(charBuffer, '\n', start);
+//			
+//			charBuffertmp = charBuffer.subSequence(start ,  end);
+//			start=end;
+//			end=start+end; 
+//			
+//			System.out.println(charBuffertmp);
+//
 //		}
-
-
-		
-	}
-
-	private static int findCharacter(CharBuffer chars, char c, int start) {
-
-		while (chars.charAt(start) != c) {
-			start++;
-		}
-
-		return start;
-	}
+//		
+//
+//		
+//		
+////		while (charBuffer.hasRemaining()) {
+//////			int i = parse(charBuffer);
+////			
+////		
+////		}
+//
+//
+//		
+//	}
+//
+//	private static int findCharacter(CharBuffer chars, char c, int start) {
+//
+//		while (chars.charAt(start) != c) {
+//			start++;
+//		}
+//
+//		return start;
+//	}
     
     
 }

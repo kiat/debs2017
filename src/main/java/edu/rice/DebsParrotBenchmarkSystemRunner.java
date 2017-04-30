@@ -16,7 +16,7 @@ import org.slf4j.LoggerFactory;
  * @author Roman Katerinenko
  */
 public class DebsParrotBenchmarkSystemRunner {
-    private static final Logger logger = LoggerFactory.getLogger(DebsParrotBenchmarkSystemRunner.class);
+//    private static final Logger logger = LoggerFactory.getLogger(DebsParrotBenchmarkSystemRunner.class);
 
     
     public static void set(Map<String, String> newenv) throws Exception {
@@ -59,10 +59,10 @@ public class DebsParrotBenchmarkSystemRunner {
     public static void main(String... args) throws Exception {
 
     	// TODO: Take thie line out when you run it on platform.
-        setupEnvironment();
+    	// setupEnvironment();
 
         
-        logger.debug("Running...");
+//        logger.debug("Running...");
         DebsParrotBenchmarkSystem system = null;
         try {
 //            system = new DebsParrotBenchmarkSystem();
@@ -74,6 +74,6 @@ public class DebsParrotBenchmarkSystemRunner {
                 system.close();
             }
         }
-        logger.debug("Finished.");
+//        logger.debug("Finished.");
     }
 }

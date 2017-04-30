@@ -172,9 +172,9 @@ public class RDFParser {
 			if (myValue.charAt(1) != 'A') {
 				// value = NumberParser.getDouble(myValue);
 				value = Double.parseDouble(myValue);
-				Controller. getInstance().pushData(machineIndex, dimension, checkIt(timestampIndex, timestampValue), value);
+//				Controller. getInstance().pushData(machineIndex, dimension, checkIt(timestampIndex, timestampValue), value);
 
-//				System.out.println(machineIndex+ "," + dimension + "," +  checkIt(timestampIndex, timestampValue) + "," + value); 
+				System.out.println(machineIndex+ "," + dimension + "," +  checkIt(timestampIndex, timestampValue) + "," + value); 
 				 
 				 // System.out.println(machineIndex+ "," + dimension + "," +
 				// timestampIndex+","+ value);
@@ -200,16 +200,9 @@ public class RDFParser {
 			return timestampIndextemp;
 		}
 
-		if (tmpTimestampValue.equals(timestampValue)) {
-//			if (timestampIndex != timestampIndextemp) {
-//			}
-//			System.out.println(timestampIndextemp + ",  " + timestampIndex + "  -- " + timestampValue);
-
-		} else {
+		if (!tmpTimestampValue.equals(timestampValue)) {
 			tmpTimestampValue = timestampValue;
 			timestampIndextemp++;
-//			System.out.println(timestampIndextemp + ",  " + timestampIndex + "  -- " + timestampValue);
-
 		}
 		
 		return timestampIndextemp;

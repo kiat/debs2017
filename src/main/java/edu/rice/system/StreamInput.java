@@ -15,7 +15,7 @@ public class StreamInput {
 
         ConnectionFactory factory = new ConnectionFactory();
 
-        factory.setHost("localhost");
+        factory.setHost("cslinux15.cs.rice.edu");
 
         try {
 
