@@ -41,7 +41,7 @@ public class ReadConstantsFromSystemTTL {
 	public static void readSystemTTL(){
 		Query query = QueryFactory.create(queryString);
 
-		Model model = RDFDataMgr.loadModel("system.ttl") ;
+		Model model = RDFDataMgr.loadModel("./system.ttl") ;
 		int maxClusterIterations=50;
 		int transitionsCount=5;
 		int windowSize=10;
@@ -75,6 +75,7 @@ public class ReadConstantsFromSystemTTL {
 			
 
 		} catch (Exception e) {
+			System.err.println("Exception in ReadConstantsFromSystemTTL.readSystemTTL : ");
 			e.printStackTrace();
 		}
 			

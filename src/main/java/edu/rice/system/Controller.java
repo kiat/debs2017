@@ -26,9 +26,6 @@ public class Controller {
 //     	MetadataManager.getInstance().readMetaData("./molding_machine_5000dp.metadata.data");
 
 		// final Metadata is 1000molding_machine.metadata.nt
-		MetadataManager.getInstance().readMetaData("./1000molding_machine.metadata.data");
-		ReadConstantsFromSystemTTL.readSystemTTL();
-
 
 	}
 

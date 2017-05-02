@@ -6,9 +6,11 @@ import java.util.HashMap;
 import java.util.Map;
 
 import org.hobbit.core.Constants;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import edu.rice.metadata.MetadataManager;
+import edu.rice.metadata.ReadConstantsFromSystemTTL;
 
 /**
  * Entry point for Docker.
@@ -56,6 +58,11 @@ public class DebsParrotBenchmarkSystemRunner {
     
     
     public static void main(String... args) throws Exception {
+
+    	// Read the metadata and the constant parameters from system.ttl     	
+		MetadataManager.getInstance().readMetaData("./1000molding_machine.metadata.data");
+		ReadConstantsFromSystemTTL.readSystemTTL();
+
 
     	// TODO: Take thie line out when you run it on platform.
     	 setupEnvironment();
