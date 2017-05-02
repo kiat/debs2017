@@ -6,6 +6,7 @@ import java.util.LinkedList;
 import edu.rice.kmeans.CircularQueue;
 import edu.rice.kmeans.KMeans;
 import edu.rice.metadata.MetadataManager;
+import edu.rice.metadata.ReadConstantsFromSystemTTL;
 import edu.rice.output.OutputGenerator;
 import edu.rice.utils.Constants;
 
@@ -22,10 +23,12 @@ public class Controller {
 		// Reads the metadata and have it ready for use.
 
 
-		//		 MetadataManager.getInstance().readMetaData("./molding_machine_5000dp.metadata.data");
+//     	MetadataManager.getInstance().readMetaData("./molding_machine_5000dp.metadata.data");
 
 		// final Metadata is 1000molding_machine.metadata.nt
 		MetadataManager.getInstance().readMetaData("./1000molding_machine.metadata.data");
+		ReadConstantsFromSystemTTL.readSystemTTL();
+
 
 	}
 
@@ -86,7 +89,7 @@ public class Controller {
 
 				// then do the Kmeans and Anomaly Detection.
 				KMeans singleKMeans = new KMeans();
-				boolean hasAnomalies = singleKMeans.performAllCalculation(numberOfClusters, m_window, 0.005);
+				boolean hasAnomalies = singleKMeans.performAllCalculation(numberOfClusters, m_window, Constants.THRESHOLD);
 
 				if (hasAnomalies) {
 					double finalThreshold = singleKMeans.getThreshold();

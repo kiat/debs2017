@@ -172,11 +172,11 @@ public class RDFParser {
 			if (myValue.charAt(1) != 'A') {
 				// value = NumberParser.getDouble(myValue);
 				value = Double.parseDouble(myValue);
+				
 				Controller. getInstance().pushData(machineIndex, dimension, checkIt(timestampIndex, timestampValue), value);
-
-//				System.out.println(machineIndex+ "," + dimension + "," +  checkIt(timestampIndex, timestampValue) + "," + value); 
-				 
-				 // System.out.println(machineIndex+ "," + dimension + "," +
+//				System.out.println(machineIndex+ "," + dimension + "," +  checkIt(timestampIndex, timestampValue) + ", ValueIs: " + value); 
+				
+     			// System.out.println(machineIndex+ "," + dimension + "," +
 				// timestampIndex+","+ value);
 
 //				checkIt(timestampIndex, timestampValue);

@@ -110,6 +110,7 @@ public class ReadingRDFJenaFromFile {
 				RDFNode machine = soln.get("machine");
 
 				Literal outputLiteral = soln.getLiteral("outputLiteral");
+				
 				Object myLiteralObject = outputLiteral.getValue();
 
 				machineNr = Integer.parseInt(machine.asResource().getLocalName().substring(8));

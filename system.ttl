@@ -5,9 +5,14 @@
 @prefix hobbit: <http://w3id.org/hobbit/vocab#> .
 @prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
 @prefix owl: <http://www.w3.org/2002/07/owl#> .
-<http://project-hobbit.eu/resources/debs2017/debsricesystem>	a	hobbit:SystemInstance;
-    rdfs:label	"DEBS Rice system example"@en;
-	rdfs:comment "Example of DEBS Rice system"@en;
-	hobbit:implementsAPI <http://www.example.org/exampleBenchmark/debsAPI>;
-	hobbit:imageName "git.project-hobbit.eu:4567/dimitrijejankov/adapter" .
 
+<http://project-hobbit.eu/resources/debs2017/rice>    a    hobbit:SystemInstance;
+    rdfs:label    "Rice University DEBS 2017"@en;
+    rdfs:comment "Implementation from Rice University Team"@en;
+    hobbit:implementsAPI <http://www.example.org/exampleBenchmark/debsAPI>;
+    hobbit:imageName "git.project-hobbit.eu:4567/dj16/rice";
+
+    <http://www.debs2017.org/gc/probabilityThreshold> "0.005"^^xsd:double;
+    <http://www.debs2017.org/gc/windowSize> "10"^^xsd:unsignedInt;
+    <http://www.debs2017.org/gc/transitionsCount> "50"^^xsd:unsignedInt;
+    <http://www.debs2017.org/gc/maxClusterIterations> "50"^^xsd:unsignedInt.

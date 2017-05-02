@@ -15,7 +15,7 @@ public class StreamInput {
 
         ConnectionFactory factory = new ConnectionFactory();
 
-        factory.setHost("cslinux15.cs.rice.edu");
+        factory.setHost("localhost");
 
         try {
 
@@ -25,9 +25,8 @@ public class StreamInput {
             channel.queueDeclarePassive("hobbit.datagen-system.exp1").getQueue();
 
             // Open the file and buffer it
-//            File file = new File(ClassLoader.getSystemClassLoader().getResource("molding_machine_10M.nt").getFile());
             File file = new File("/home/kia/Desktop/Debs2017_data/19.04.2017.10molding_machine_5000dp/10molding_machine_5000dp.nt");
-//            File file = new File("/home/kia/Desktop/Debs2017_data/19.04.2017.10molding_machine_5000dp/10molding_machine_5000dp.nt");
+//            File file = new File("/home/kia/Desktop/Debs2017_data/19.04.2017.1molding_machine_5000dp/molding_machine_5000dp.nt");
             
             
             BufferedReader br = new BufferedReader(new FileReader(file));

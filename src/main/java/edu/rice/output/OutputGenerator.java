@@ -60,6 +60,21 @@ public class OutputGenerator {
   
 
 		
+
+
+//		System.out.println(output);
+		
+		sendIt(createOutputString(machineNr, dimension, probability, timestamp));
+
+		// increment the anomaly counter 
+		anomalyCounter++; 
+		return ;	
+	} 
+	
+	
+	
+	public static synchronized String createOutputString(int machineNr, int dimension, double probability, long timestamp){
+		
 		String output="";
 		String space=" ";
 		String eol = System.getProperty("line.separator");
@@ -71,51 +86,19 @@ public class OutputGenerator {
 				  anomalyURI + space + inAbnormalDimension + space + "<" + wm+"#_"+machineNr+"_" + dimension + ">" +  space + "." + eol + 
 				  anomalyURI + space + hasTimeStamp + space + "<" + debsPrefix +"#Timestamp_"+timestamp + ">" +  space + "." + eol+
 				  anomalyURI + space + hasProbab + space + "\""+  probability + "\"^^"+xmlDouble +  space +  "." ; 	
-
-//		System.out.println(output);
 		
-//		// send to the bus system for output 
+		return output;
+	}
+	
+	
+	
+	public static synchronized void sendIt(String output){
+		
 		try {
 			DebsParrotBenchmarkSystem.getInstance().send(output.getBytes(DebsParrotBenchmarkSystem.CHARSET));
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
-		
-		// increment the anomaly counter 
-		anomalyCounter++; 
-		return ;	
 	} 
 	
-	
-//	// This is a performance Test. 
-//	
-//	// String concatenation is faster 
-//	// http://stackoverflow.com/questions/1532461/stringbuilder-vs-string-concatenation-in-tostring-in-java
-//	public static void main(String[] args ){
-//		
-//		long startTime = 0;
-//
-//		// NOW read the objects from memory
-//		// START OF Time calculation
-//		startTime = System.nanoTime();
-//		
-//		
-//		OutputGenerator.getInstance().outputAnomaly(59, 31,0.004115226337448559, 24); 
-//		OutputGenerator.getInstance().outputAnomaly(59, 5,0.004115226337448559, 24);	
-//		
-//		// Do it 10M times
-//		for (int i = 0; i < 10000000; i++) {
-//			OutputGenerator.getInstance().outputAnomaly(59, 31,0.004115226337448559, 24); 
-//			OutputGenerator.getInstance().outputAnomaly(59, 5,0.004115226337448559, 24);	
-//		}
-//		
-//		// End of time calculation
-//		long endTime = System.nanoTime();
-//		double elapsedTotalTime = (endTime - startTime) / 1000000000.0;
-//
-//		System.out.println("Elapsed Time " + String.format("%.9f", elapsedTotalTime));
-//		 
-//	}
-	
-
 }

@@ -40,9 +40,8 @@ public class DebsParrotBenchmarkSystemRunner {
     	
 //    	String encodedModel = System.getenv().get("SYSTEM_PARAMETERS_MODEL"); //read environment variable
 //    	Model model = RabbitMQUtils.readModel(encodedModel); // decode Jena model
-//    	
-//    	
 //    	StmtIterator iterator = model.listStatements(null, null, (RDFNode) null); // query model
+    	
     	Map<String, String> env = new HashMap<>();
         env.put(Constants.SYSTEM_URI_KEY, "http://project-hobbit.eu/resources/debs2017/debsparrotsystemexample");
         env.put(Constants.RABBIT_MQ_HOST_NAME_KEY, "localhost");
@@ -59,7 +58,7 @@ public class DebsParrotBenchmarkSystemRunner {
     public static void main(String... args) throws Exception {
 
     	// TODO: Take thie line out when you run it on platform.
-    	// setupEnvironment();
+    	 setupEnvironment();
 
         
 //        logger.debug("Running...");
