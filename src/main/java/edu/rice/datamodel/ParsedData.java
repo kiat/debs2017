@@ -2,20 +2,26 @@ package edu.rice.datamodel;
 
 import java.util.Comparator;
 
+import edu.rice.kmeans.CircularQueue;
+
 public class ParsedData implements Comparator<ParsedData> {
 
 	private long messageCount;
 	private int machineNr;
 	private int dimensionNr;
 	private int timestampIndex;
-	private double value;
+	private CircularQueue window;
+	private double threshold;
+	private int noOfClusters;
 
-	public ParsedData(long messageCount, int machineNr, int dimensionNr, int timestampIndex, double value) {
+	public ParsedData(long messageCount, int machineNr, int dimensionNr, int timestampIndex, CircularQueue m_window, int noOfClusters, double threshold) {
 		this.messageCount = messageCount;
 		this.machineNr = machineNr;
 		this.dimensionNr = dimensionNr;
 		this.timestampIndex = timestampIndex;
-		this.value = value;
+		this.window = m_window;
+		this.noOfClusters = noOfClusters;
+		this.setThreshold(threshold);
 	}
 
 	public long getMessageCount() {
@@ -50,12 +56,28 @@ public class ParsedData implements Comparator<ParsedData> {
 		this.timestampIndex = timestampIndex;
 	}
 
-	public double getValue() {
-		return value;
+	public CircularQueue getWindow() {
+		return window;
 	}
 
-	public void setValue(double value) {
-		this.value = value;
+	public void setWindow(CircularQueue window) {
+		this.window = window;
+	}
+
+	public int getNoOfClusters() {
+		return noOfClusters;
+	}
+
+	public void setNoOfClusters(int noOfClusters) {
+		this.noOfClusters = noOfClusters;
+	}
+
+	public double getThreshold() {
+		return threshold;
+	}
+
+	public void setThreshold(double threshold) {
+		this.threshold = threshold;
 	}
 
 	@Override
