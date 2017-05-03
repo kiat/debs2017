@@ -6,7 +6,6 @@ import java.util.LinkedList;
 import edu.rice.kmeans.CircularQueue;
 import edu.rice.kmeans.KMeans;
 import edu.rice.metadata.MetadataManager;
-import edu.rice.metadata.ReadConstantsFromSystemTTL;
 import edu.rice.output.OutputGenerator;
 import edu.rice.utils.Constants;
 
@@ -20,13 +19,6 @@ public class Controller {
 	static int counter = 1;
 
 	private Controller() {
-		// Reads the metadata and have it ready for use.
-
-
-//     	MetadataManager.getInstance().readMetaData("./molding_machine_5000dp.metadata.data");
-
-		// final Metadata is 1000molding_machine.metadata.nt
-
 	}
 
 	static class ControllerHolder {
@@ -91,12 +83,13 @@ public class Controller {
 				if (hasAnomalies) {
 					double finalThreshold = singleKMeans.getThreshold();
 
-//					String output = OutputGenerator.anomalyCounter + "," + machineNr + "," + dimensionNr + "," + numberOfClusters + ",  " + finalThreshold + " ,  "
-//							+ m_window.toString() + " Timestamps " + tmp_timestamp_ifFull.toString();
-//					
-//					System.out.println(output);
+//					if(OutputGenerator.anomalyCounter>42){
+//						String output = OutputGenerator.anomalyCounter + "," + machineNr + "," + dimensionNr + "," + numberOfClusters + ",  " + finalThreshold + " ,  " + m_window.toString() + " Timestamps " +  (int) tmp_timestamp_ifFull.get(Constants.WINDOW_SIZE - Constants.SMALLER_WINDOW - 1);
+//						System.out.println(output);
+//					}
 					
 					OutputGenerator.outputAnomaly(machineNr, dimensionNr, finalThreshold, (int) tmp_timestamp_ifFull.get(Constants.WINDOW_SIZE - Constants.SMALLER_WINDOW - 1));
+
 				}
 
 				// FIFO remove

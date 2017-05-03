@@ -9,6 +9,7 @@ import org.hobbit.core.Constants;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import edu.rice.kmeans.KMeans;
 import edu.rice.metadata.MetadataManager;
 import edu.rice.metadata.ReadConstantsFromSystemTTL;
 
@@ -62,10 +63,12 @@ public class DebsParrotBenchmarkSystemRunner {
     	// Read the metadata and the constant parameters from system.ttl     	
 		MetadataManager.getInstance().readMetaData("./1000molding_machine.metadata.data");
 		ReadConstantsFromSystemTTL.readSystemTTL();
+		
+
 
 
     	// TODO: Take thie line out when you run it on platform.
-    	 setupEnvironment();
+//    	 setupEnvironment();
 
         
 //        logger.debug("Running...");
