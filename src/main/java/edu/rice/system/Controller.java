@@ -5,6 +5,7 @@ import java.util.LinkedList;
 
 import edu.rice.kmeans.CircularQueue;
 import edu.rice.kmeans.KMeans;
+import edu.rice.kmeans.KMeansMultiThread;
 import edu.rice.metadata.MetadataManager;
 import edu.rice.output.OutputGenerator;
 import edu.rice.utils.Constants;
@@ -72,25 +73,34 @@ public class Controller {
 			if (windowsMap.get(machine_Dimension_ID).size() == Constants.WINDOW_SIZE) {
 
 				CircularQueue m_window = windowsMap.get(machine_Dimension_ID);
+				CircularQueue coppiedWindow = new  CircularQueue(Constants.WINDOW_SIZE);
+				
+				for(int i = 0; i < m_window.size(); ++i) {
+					coppiedWindow.insert(m_window.get(i).getX());
+				}
+				
 				LinkedList<Integer> tmp_timestamp_ifFull = timestamps.get(machine_Dimension_ID);
 
 				int numberOfClusters = MetadataManager.getInstance().getClusterNr(machineNr, dimensionNr);
 
-				// then do the Kmeans and Anomaly Detection.
-				KMeans singleKMeans = new KMeans();
-				boolean hasAnomalies = singleKMeans.performAllCalculation(numberOfClusters, m_window, Constants.THRESHOLD);
-
-				if (hasAnomalies) {
-					double finalThreshold = singleKMeans.getThreshold();
-
-//					if(OutputGenerator.anomalyCounter>42){
-//						String output = OutputGenerator.anomalyCounter + "," + machineNr + "," + dimensionNr + "," + numberOfClusters + ",  " + finalThreshold + " ,  " + m_window.toString() + " Timestamps " +  (int) tmp_timestamp_ifFull.get(Constants.WINDOW_SIZE - Constants.SMALLER_WINDOW - 1);
-//						System.out.println(output);
-//					}
-					
-					OutputGenerator.outputAnomaly(machineNr, dimensionNr, finalThreshold, (int) tmp_timestamp_ifFull.get(Constants.WINDOW_SIZE - Constants.SMALLER_WINDOW - 1));
-
-				}
+				KMeansMultiThread kmeans = new KMeansMultiThread(machineNr, dimensionNr, numberOfClusters, coppiedWindow, Constants.THRESHOLD, (int) tmp_timestamp_ifFull.get(Constants.WINDOW_SIZE - Constants.SMALLER_WINDOW - 1));
+				kmeans.start();
+				
+//				// then do the Kmeans and Anomaly Detection.
+//				KMeans singleKMeans = new KMeans();
+//				boolean hasAnomalies = singleKMeans.performAllCalculation(numberOfClusters, m_window, Constants.THRESHOLD);
+//
+//				if (hasAnomalies) {
+//					double finalThreshold = singleKMeans.getThreshold();
+//
+////					if(OutputGenerator.anomalyCounter>42){
+////						String output = OutputGenerator.anomalyCounter + "," + machineNr + "," + dimensionNr + "," + numberOfClusters + ",  " + finalThreshold + " ,  " + m_window.toString() + " Timestamps " +  (int) tmp_timestamp_ifFull.get(Constants.WINDOW_SIZE - Constants.SMALLER_WINDOW - 1);
+////						System.out.println(output);
+////					}
+//					
+//					OutputGenerator.outputAnomaly(machineNr, dimensionNr, finalThreshold, (int) tmp_timestamp_ifFull.get(Constants.WINDOW_SIZE - Constants.SMALLER_WINDOW - 1));
+//
+//				}
 
 				// FIFO remove
 				m_window.remove();

@@ -35,23 +35,6 @@ public class OutputGenerator {
 	public static final String wm="http://www.agtinternational.com/ontologies/WeidmullerMetadata";
 	
 	public static final String xmlDouble="<http://www.w3.org/2001/XMLSchema#double>"; 
-	
-//	
-//	
-//	private OutputGenerator() {
-//	}
-//
-//	
-//	
-//    static class SingletonHolder {
-//    	static 	final OutputGenerator instance = new OutputGenerator();
-//    }
-//    
-//    
-//    public static OutputGenerator getInstance() {
-//		return SingletonHolder.instance;
-//
-//    }
 
 
 
@@ -59,12 +42,9 @@ public class OutputGenerator {
 	public static synchronized void outputAnomaly(int machineNr, int dimension, double probability, long timestamp){
   
 
-		
-
-
-//		System.out.println(output);
-		
+//		System.out.println(createOutputString(machineNr, dimension, probability, timestamp));
 		sendIt(createOutputString(machineNr, dimension, probability, timestamp));
+
 
 		// increment the anomaly counter 
 		anomalyCounter++; 
@@ -73,7 +53,7 @@ public class OutputGenerator {
 	
 	
 	
-	public static synchronized String createOutputString(int machineNr, int dimension, double probability, long timestamp){
+	public static String createOutputString(int machineNr, int dimension, double probability, long timestamp){
 		
 		String output="";
 		String space=" ";
@@ -87,6 +67,8 @@ public class OutputGenerator {
 				  anomalyURI + space + hasTimeStamp + space + "<" + debsPrefix +"#Timestamp_"+timestamp + ">" +  space + "." + eol+
 				  anomalyURI + space + hasProbab + space + "\""+  probability + "\"^^"+xmlDouble +  space +  "." ; 	
 		
+		
+
 		return output;
 	}
 	
