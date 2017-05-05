@@ -83,24 +83,24 @@ public class Controller {
 
 				int numberOfClusters = MetadataManager.getInstance().getClusterNr(machineNr, dimensionNr);
 
-				KMeansMultiThread kmeans = new KMeansMultiThread(machineNr, dimensionNr, numberOfClusters, coppiedWindow, Constants.THRESHOLD, (int) tmp_timestamp_ifFull.get(Constants.WINDOW_SIZE - Constants.SMALLER_WINDOW - 1));
-				kmeans.start();
+//				KMeansMultiThread kmeans = new KMeansMultiThread(machineNr, dimensionNr, numberOfClusters, coppiedWindow, Constants.THRESHOLD, (int) tmp_timestamp_ifFull.get(Constants.WINDOW_SIZE - Constants.SMALLER_WINDOW - 1));
+//				kmeans.start();
 				
-//				// then do the Kmeans and Anomaly Detection.
-//				KMeans singleKMeans = new KMeans();
-//				boolean hasAnomalies = singleKMeans.performAllCalculation(numberOfClusters, m_window, Constants.THRESHOLD);
-//
-//				if (hasAnomalies) {
-//					double finalThreshold = singleKMeans.getThreshold();
-//
-////					if(OutputGenerator.anomalyCounter>42){
-////						String output = OutputGenerator.anomalyCounter + "," + machineNr + "," + dimensionNr + "," + numberOfClusters + ",  " + finalThreshold + " ,  " + m_window.toString() + " Timestamps " +  (int) tmp_timestamp_ifFull.get(Constants.WINDOW_SIZE - Constants.SMALLER_WINDOW - 1);
-////						System.out.println(output);
-////					}
-//					
-//					OutputGenerator.outputAnomaly(machineNr, dimensionNr, finalThreshold, (int) tmp_timestamp_ifFull.get(Constants.WINDOW_SIZE - Constants.SMALLER_WINDOW - 1));
-//
-//				}
+				// then do the Kmeans and Anomaly Detection.
+				KMeans singleKMeans = new KMeans();
+				boolean hasAnomalies = singleKMeans.performAllCalculation(numberOfClusters, m_window, Constants.THRESHOLD);
+
+				if (hasAnomalies) {
+					double finalThreshold = singleKMeans.getThreshold();
+
+//					if(OutputGenerator.anomalyCounter>42){
+//						String output = OutputGenerator.anomalyCounter + "," + machineNr + "," + dimensionNr + "," + numberOfClusters + ",  " + finalThreshold + " ,  " + m_window.toString() + " Timestamps " +  (int) tmp_timestamp_ifFull.get(Constants.WINDOW_SIZE - Constants.SMALLER_WINDOW - 1);
+//						System.out.println(output);
+//					}
+					
+					OutputGenerator.outputAnomaly(machineNr, dimensionNr, finalThreshold, (int) tmp_timestamp_ifFull.get(Constants.WINDOW_SIZE - Constants.SMALLER_WINDOW - 1));
+
+				}
 
 				// FIFO remove
 				m_window.remove();
