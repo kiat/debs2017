@@ -7,6 +7,8 @@ import java.nio.CharBuffer;
 import java.nio.charset.Charset;
 import java.text.ParseException;
 
+import org.bouncycastle.asn1.dvcs.Data;
+
 public class RDFParserFaster {
 	
 	// the text to skip from the beginning
@@ -53,8 +55,6 @@ public class RDFParserFaster {
 
 	private static String DATA_POINT_SKIP_STR = "\"^^<http://www.w3.org/2001/XMLSchema#double> ."; 
 
-	
-	
 	// header skips
 	private static int HEADER_SKIP_1 = HEADER_SKIP_1_STR.length();
 	private static int MACHINE_SKIP = MACHINE_SKIP_STR.length();
@@ -64,8 +64,11 @@ public class RDFParserFaster {
 	private static int HEADER_SKIP_3 = HEADER_SKIP_3_STR.length();
 	private static int DATE_VALUE_SKIP_1 = DATE_VALUE_SKIP_1_STR.length();
 	private static int DATE_VALUE_SKIP_2 = DATE_VALUE_SKIP_2_STR.length();
-	
-	
+
+    // data point skips
+	private static int DIMENSION_SKIP = DIMENSION_SKIP_STR.length();
+	private static int  VALUE_SKIP = VALUE_SKIP_STR.length();
+	private static int  DATA_POINT_SKIP = DATA_POINT_SKIP_STR.length();
     
 
 	private static String lineStart = "<http://project-hobbit.eu/resources/debs2017#";
@@ -114,9 +117,15 @@ public class RDFParserFaster {
 		CharBuffer charBuffer = utf8.decode(byteBuffer);
 		
 		
-		parseHeader(charBuffer);
+		int i= parseHeader(charBuffer);
+
+	    // parse the data points
+	    while(charBuffer.length() - i >= 200) {
+	        i = parse_data_point(charBuffer, i);
+	    }
 		
-//
+		
+
 //		while (charBuffer.hasRemaining()) {
 //			int i = parse(charBuffer);
 //			i = findCharacter(charBuffer, '\n', i);
@@ -133,6 +142,25 @@ public class RDFParserFaster {
 		return start;
 	}
 	
+	public static int fast_atoi(CharBuffer data, int start , int end ){
+		
+		int tmp=0;
+		
+		char[] s=new char[end-start];
+		
+		int j=0; 
+		
+		for (int i = start; i < end; i++) {
+			s[j]=data.get(i);
+			j++;
+		}
+
+		tmp=Integer.parseInt(new String(s));
+		
+		
+		return tmp;
+		
+	}
 	
 	
 	private static int parseHeader(CharBuffer data){
@@ -154,184 +182,112 @@ public class RDFParserFaster {
 		    // grab the machine number
 		    j = findCharacter(data, '>', i);
 
-//		    // grab the machine index
-//		    machineIndex = fast_atoi(data + i, j - i);
-//
-//		    // this is to skip to the new line
-//		    i = j + HEADER_SKIP_2;
-//
-//		    // found the beginning of the timestamp line
-//		    i = findCharacter(data, '\n', i);
-//
-//		    // skip to the timestamp index
-//		    i += TIMESTAMP_SKIP_1;
-//
-//		    // skip to the fist character..
-//		    i++;
-//
-//		    // grab the index of the timestamp
-//		    j = findCharacter(data, '>', i);
-//
-//		    // grab the timestamp index
-//		    timestampIndex = (size_t) fast_atoi(data + i, j - i);
-//
-//		    // skip to the date value
-//		    i = j + TIMESTAMP_SKIP_2 + DATE_VALUE_SKIP_1;
-//
-//		    // skip the the first character of the day
-//		    i++;
+		    
+		    // grab the machine index
+		    machineIndex=fast_atoi(data, i, j);
+		    
+		    
+		    // this is to skip to the new line
+		    i = j + HEADER_SKIP_2;
 
-//		    // grab the day
-//		    int day = (data[i] - '0') * 10 + (data[i+1] - '0');
-//
-//		    // skip to the hours
-//		    i += 2 + DATE_VALUE_SKIP_2;
-//
-//		    // grab the hours
-//		    int hours = (data[i] - '0') * 10 + (data[i+1] - '0');
-//
-//		    // skip ':' to to to minutes
-//		    i += 3;
-//
-//		    // grab the minutes
-//		    int minutes = (data[i] - '0') * 10 + (data[i+1] - '0');
-//
-//		    // figure out the hash
-//		    int current_hash = (24 * 60) * day + 60 * hours + minutes;
-//
-//		    // figure out the timestamp.
-//		    timestamp_idx = check_timestamp(current_hash, timestamp_idx);
-//
-//		    // skip the rest of the header
-//		    i += HEADER_SKIP_3;
-//
-//		    // found the beginning of the data
-//		    i = find_character(data, '\n', i);
+		    // found the beginning of the timestamp line
+		    i = findCharacter(data, '\n', i);
 
-		    return i;
-		
+		    // skip to the timestamp index
+		    i += TIMESTAMP_SKIP_1;
+
+		    // skip to the fist character..
+		    i++;
+
+		    // grab the index of the timestamp
+		    j = findCharacter(data, '>', i);
+
+		    // grab the timestamp index
+		    timestampIndex = fast_atoi(data,  i, j );
+		    
+
+		    // skip to the date value
+		    i = j + TIMESTAMP_SKIP_2;
+
+		    // skip the the first character of the day
+		    i++;
+		    i++;
+
+		    char[] timestamValueChar=new char[25];
+			
+		   int y=0;
+		   for (int x = i; x < i+25; x++) {
+			   timestamValueChar[y]=data.get(x);
+			   y++; 
+		   }
+
+		   timestampValue=new String(timestamValueChar);
+		   i=i+25;
+
+		   i=i+DATA_POINT_SKIP_STR.length();
+		   
+    	   return i;
 	}
 	
 	
 	
 	
+	static int  parse_data_point(CharBuffer data, int i) {
 
-	private static int parse(CharBuffer line) throws ParseException {
+	    int j;
 
-		// here we check the
-		int i = lineStartSkip;
+	    // skip to the approximate position of machine dimension value
+	    i += DIMENSION_SKIP;
 
-		boolean isObservation = true;
-		boolean isObservationGroup = true;
-		boolean isValue = true;
-		boolean isTimestamp = true;
+	    // skip to the real position
+	    i = findCharacter(data, '_', i);
 
-		int j = 0;
+	    // skip the '_'
+	    i++;
 
-		// figure out what we are dealing with....
-		while (line.charAt(i) != '_') {
+	    // skip the machine
+	    i = findCharacter(data, '_', i) + 1;
 
-			if (isObservationGroup) {
-				isObservationGroup = ObservationGroup[j] == line.charAt(i);
-			}
+	    // figure out where the '>'
+	    j = findCharacter(data, '>', i);
 
-			if (isObservation) {
-				isObservation = Observation[j] == line.charAt(i);
-			}
+	    
+	    
+	    
+//	    // grab the dimension
+//	    int dimension_number = fast_atoi(data , i, j - i);
+//
+//	    // skip to the approximate position of the value
+//	    i = j + VALUE_SKIP;
+//
+//	    // skip to the real position of the value
+//	    i = findCharacter(data, '"', i);
+//
+//	    // skip the '"'
+//	    i++;
+//
+//	    // find the end
+//	    j = findCharacter(data, '"', i);
+//
+////	    // parse the double
+////	    if (data.get(i + 1) != 'A') {
+////	        double value = fast_atof(data, i, j - i);
+////
+////	        // call the callback
+////	        if (mp->get_cluster_no((size_t) machine_idx)[dimension_number] != 0) {
+////	            callback((size_t) machine_idx, (size_t) dimension_number, timestamp_idx, value);
+////	        }
+////	    }
+//
+//	    i = j + DATA_POINT_SKIP;
 
-			if (isValue) {
-				isValue = Value[j] == line.charAt(i);
-			}
-
-			if (isTimestamp) {
-				isTimestamp = Timestamp[j] == line.charAt(i);
-			}
-
-			// we don't care about the others.
-			if (!isObservation && !isValue && !isObservationGroup && !isTimestamp) {
-				return i;
-			}
-
-			j++;
-			i++;
-		}
-
-		// skip the '_'
-		i++;
-		j = findCharacter(line, '>', i);
-
-		if (isTimestamp) {
-			timestampIndex = NumberParser.getIntegerUnsafe(line.subSequence(i, j));
-		}
-
-		// skip "> "
-		i = j + 2;
-
-		// we ware dealing wit an observation
-		if (isObservation) {
-			// here we only care about the dimension...
-			if (line.charAt(i + observationSkip1) == 'o' && line.charAt(i + observationSkip2) == 'P') {
-				i = findCharacter(line, '_', i + observationSkip3) + 1;
-				j = findCharacter(line, '>', i);
-
-				dimension = NumberParser.getIntegerUnsafe(line.subSequence(i, j));
-			}
-		}
-
-		// if we are dealing with an observation group
-		else if (isObservationGroup) {
-			// in observation we only are interested in the machine...
-			if (line.charAt(i + machineSkip) != 'm') {
-				return i + machineSkip;
-			}
-
-			j = findCharacter(line, '>', i + machineSkip2);
-			i += machineSkip2;
-
-			machineIndex = NumberParser.getIntegerUnsafe(line.subSequence(i, j));
-		}
-
-		// if it's a timestamp
-		else if (isTimestamp) {
-			// we only are interested in the value
-			if (line.charAt(i + timestampSkip) != 'v') {
-				return i + timestampSkip;
-			}
-
-			j = findCharacter(line, '"', i + timestampSkip2);
-			i += timestampSkip2;
-
-			timestampValue = line.subSequence(i, j).toString();
-		}
-
-		// it's a value
-		else if (isValue) {
-			if (line.charAt(i + valueSkip1) != 'v') {
-				return i + valueSkip1;
-			}
-
-			j = findCharacter(line, '"', i + valueSkip2);
-			i += valueSkip2;
-
-			String myValue = line.subSequence(i, j).toString();
-
-			if (myValue.charAt(1) != 'A') {
-				// value = NumberParser.getDouble(myValue);
-				value = Double.parseDouble(myValue);
-				
-				Controller. getInstance().pushData(machineIndex, dimension, checkIt(timestampIndex, timestampValue), value);
-//				System.out.println(machineIndex+ "," + dimension + "," +  checkIt(timestampIndex, timestampValue) + ", ValueIs: " + value); 
-				
-     			// System.out.println(machineIndex+ "," + dimension + "," +
-				// timestampIndex+","+ value);
-
-//				checkIt(timestampIndex, timestampValue);
-
-			}
-		}
-
-		return i;
+	    return i;
 	}
+
+	
+	
+	
+	
 
 	static String tmpTimestampValue = "";
 	static int timestampIndextemp = -1;

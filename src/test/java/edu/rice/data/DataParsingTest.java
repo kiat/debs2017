@@ -7,6 +7,7 @@ import java.io.IOException;
 import java.text.ParseException;
 
 import edu.rice.parser.RDFParser;
+import edu.rice.parser.RDFParserFaster;
 
 public class DataParsingTest {
     public static void main(String[] args) {
@@ -16,7 +17,7 @@ public class DataParsingTest {
 
             // Open the file and buffer it
 //            File file = new File(ClassLoader.getSystemClassLoader().getResource("molding_machine_10M.nt").getFile());
-        	File file = new File("/home/kia/Desktop/Debs2017_data/19.04.2017.10molding_machine_5000dp/10molding_machine_5000dp.nt");
+        	File file = new File("/home/kia/Desktop/Debs2017_data/19.04.2017.1molding_machine_5000dp/molding_machine_5000dp.nt");
             
             BufferedReader br = new BufferedReader(new FileReader(file));
 
@@ -39,14 +40,14 @@ public class DataParsingTest {
 
                     if (segment.compareTo("")!=0) {
                         byte[] messageBodyBytes = segment.getBytes();
-                        RDFParser.processData(messageBodyBytes);                      
+                        RDFParserFaster.processData(messageBodyBytes);                      
                     }
 
-                	System.out.println(segment);
+//                	System.out.println(segment);
                 	
                 	System.out.println("\n\n#########################");
-                	System.out.println("#########################");
-                	System.out.println("#########################\n\n");
+//                	System.out.println("#########################");
+//                	System.out.println("#########################\n\n");
                 	
                 	
                     segment = "";
@@ -61,7 +62,7 @@ public class DataParsingTest {
             
             // one last send out  
             byte[] messageBodyBytes = segment.getBytes();
-            RDFParser.processData(messageBodyBytes);
+            RDFParserFaster.processData(messageBodyBytes);
 
 
             br.close();
