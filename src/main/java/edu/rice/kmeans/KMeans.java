@@ -118,7 +118,7 @@ public class KMeans {
 		this.noOfPoints = _points.size();
 		
 		// Clusters:
-		clusters = new ArrayList<Cluster> (_numClusters);				
+		clusters = new ArrayList<Cluster> (Constants.WINDOW_SIZE);				
 		
 		//Number of clusters:
 		this.noOfClusters = _numClusters;
@@ -148,12 +148,21 @@ public class KMeans {
 				}				
 			}
 		}
-			
+		
+//		// all equal
+//		if(countUnique == 1)
+//			return false;
+		
+		// TODO
+		if(countUnique > noOfClusters && countUnique > 7 )
+			return false;
+		
 		// If a given window has less than K distinct values than the number of clusters to be computed 
 		// must be equal to the number of distinct values in the window.
 		if (countUnique < noOfClusters) {
 			noOfClusters = countUnique;
-		}
+		}		
+
 			
 		// Perform the clustering:
 		this.performClustering();

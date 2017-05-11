@@ -12,8 +12,10 @@ public class KmeansTest {
 		CircularQueue m_window = new CircularQueue(Constants.WINDOW_SIZE);
 					  // 2.97  3.00  2.94  2.89  3.02  2.95  2.94  3.05  3.05  2.89
 					  // -0.00 0.00 0.01 -0.00 -0.00 -0.05 -0.04 0.02 -0.02 -0.01
-		double[] data = { -0.00, 0.00, 0.01, -0.00, -0.00, -0.05, -0.04, 0.02 ,-0.02, -0.01};
+//		double[] data = { -0.00, 0.00, 0.01, -0.00, -0.00, -0.05, -0.04, 0.02 ,-0.02, -0.01};
 
+		double[] data={ 2.97 , 3.00  ,2.94 , 2.89 , 3.02 , 2.95 , 2.94 , 3.05,  3.05 , 2.89};
+		
 		for (int i = 0; i < data.length; i++) {
 			m_window.insert(data[i]);	
 		}
@@ -22,9 +24,9 @@ public class KmeansTest {
 			KMeans singleKMeans = new KMeans();
 			
 			
-			data[0] += 0.001;
+//			data[0] += 0.001;
 			
-			boolean hasAnomalies = singleKMeans.performAllCalculation(3, m_window, 0.005);
+			boolean hasAnomalies = singleKMeans.performAllCalculation(4, m_window, 0.005);
 			
 			if(hasAnomalies)
 			System.out.println(singleKMeans.getThreshold());	
