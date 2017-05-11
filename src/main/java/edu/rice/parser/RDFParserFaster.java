@@ -75,6 +75,10 @@ public class RDFParserFaster {
 		// parse the data points
 		while (charBuffer.length() - i >= 100) {
 			i = parse_data_point(charBuffer, i);
+//			System.out.println(machineIndex + "," + dimension+ "," + checkIt(timestampIndex, timestampValue)+ "," + value);
+			// Push it
+			Controller.getInstance().pushData(machineIndex, dimension, checkIt(timestampIndex, timestampValue), value);
+
 		}
 
 	}
@@ -163,15 +167,8 @@ public class RDFParserFaster {
 		}
 
 		timestampValue = new String(timestamValueChar);
-
-		// correct the timestamp index
-		timestampIndex = checkIt(timestampIndex, timestampValue);
-
-		// Push it
-		Controller.getInstance().pushData(machineIndex, dimension, checkIt(timestampIndex, timestampValue), value);
-
+		
 		i = i + 25;
-
 		i = i + DATA_POINT_SKIP_STR.length();
 
 		return i;
@@ -219,8 +216,10 @@ public class RDFParserFaster {
 			y++;
 		}
 
+		String valueString=new String(valueChar);
 		try {
-			value = Double.parseDouble(new String(valueChar));
+			if (valueString.charAt(1) != 'A') 
+			value = Double.parseDouble(valueString);
 		} catch (NumberFormatException e) {
 
 		}

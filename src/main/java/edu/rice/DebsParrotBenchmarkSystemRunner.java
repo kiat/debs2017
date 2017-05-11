@@ -68,7 +68,7 @@ public class DebsParrotBenchmarkSystemRunner {
 
 
     	// TODO: Take thie line out when you run it on platform.
-    	 setupEnvironment();
+//    	 setupEnvironment();
 
         
 //        logger.debug("Running...");
