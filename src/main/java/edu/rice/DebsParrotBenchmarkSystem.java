@@ -10,6 +10,7 @@ import com.rabbitmq.client.MessageProperties;
 
 import edu.rice.parser.RDFJenaParser;
 import edu.rice.parser.RDFParser;
+import edu.rice.parser.RDFParserFaster;
 
 import org.hobbit.core.Commands;
 import org.hobbit.core.Constants;
@@ -200,7 +201,9 @@ public class DebsParrotBenchmarkSystem extends AbstractCommandReceivingComponent
 //                logger.debug("Repeating message: {}", message);
                 
 //              send(bytes);
-                RDFParser.processData(bytes);
+            	
+            	RDFParserFaster.processData(bytes);
+//                RDFParser.processData(bytes);
 //                RDFJenaParser.processData(bytes);
             }
         } catch (Exception e) {
