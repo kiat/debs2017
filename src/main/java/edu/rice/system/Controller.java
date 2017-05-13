@@ -96,12 +96,12 @@ public class Controller {
 
 //				if (noOfUnique>3) {
 					
-//					// if we have it already in cache 
-//					if (results.containsKey(m_window)) {
-//						OutputGenerator.outputAnomaly(machineNr, dimensionNr, results.get(m_window), (int) tmp_timestamp_ifFull.get(Constants.WINDOW_SIZE - Constants.SMALLER_WINDOW - 1));
-//
-//					// if we do not have it already in cache
-//					} else {
+					// if we have it already in cache 
+					if (results.containsKey(m_window)) {
+						OutputGenerator.outputAnomaly(machineNr, dimensionNr, results.get(m_window), (int) tmp_timestamp_ifFull.get(Constants.WINDOW_SIZE - Constants.SMALLER_WINDOW - 1));
+
+					// if we do not have it already in cache
+					} else {
 
 						// then do the Kmeans and Anomaly Detection.
 						boolean hasAnomalies = singleKMeans.performAllCalculation(numberOfClusters, m_window, Constants.THRESHOLD);
@@ -120,8 +120,8 @@ public class Controller {
 							// }
 							OutputGenerator.outputAnomaly(machineNr, dimensionNr, finalThreshold, (int) tmp_timestamp_ifFull.get(Constants.WINDOW_SIZE - Constants.SMALLER_WINDOW - 1));
 
-//							results.put(m_window, finalThreshold);
-//						}
+							results.put(m_window, finalThreshold);
+						}
 
 						
 //						System.out.println("Hit " + m_window);
