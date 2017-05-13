@@ -86,11 +86,11 @@ public class CircularQueue {
 	}
 
 	public String toString() {
-		String tmp = ("[ ");
+		String tmp = ("");
 		for (int i = 0; i < countElements; i++) {
-			tmp += (String.format("%.2f", points[(first + i) % windowSize].getX()) + " ");
+			tmp += (String.format("%.2f", points[(first + i) % windowSize].getX()) + ",");
 		}
-		tmp += ("]");
+		tmp += ("");
 		return tmp;
 	}
 
@@ -140,6 +140,19 @@ public class CircularQueue {
 				}				
 		}		
 		return countUnique;
+	}
+	
+	
+	@Override
+	public int hashCode()
+	{
+	    return toString().hashCode();
+	}
+
+	@Override
+	public boolean equals(Object o)
+	{
+	    return this.toString().equals(o);
 	}
 
 	// public static void main(String[] args) {

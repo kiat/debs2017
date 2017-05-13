@@ -16,12 +16,19 @@ public class Controller {
 	static HashMap<Integer, CircularQueue> windowsMap = new HashMap<Integer, CircularQueue>();
 	static HashMap<Integer, LinkedList<Integer>> timestamps = new HashMap<Integer, LinkedList<Integer>>();
 
-	static int counter = 1;
+	static HashMap<CircularQueue, Double> results = new HashMap<CircularQueue, Double>();
+
+//	static int counter = 1;
+	static int safeWindowSize;
 
 	KMeans singleKMeans;
 
 	private Controller() {
 		singleKMeans = new KMeans();
+
+		safeWindowSize = getSafeWindowSize(Constants.WINDOW_SIZE, Constants.SMALLER_WINDOW, Constants.THRESHOLD);
+
+		// System.out.println("Safe Window Size " + safeWindowSize);
 	}
 
 	static class ControllerHolder {
@@ -85,17 +92,23 @@ public class Controller {
 
 				// If all data items in the window are equal there will be no
 				// anomaly there to report.
-				if (!m_window.isAllUnique()) {
+//				 int noOfUnique = m_window.getNumberOfUniquePoints();
 
-//					int noOfUnique = m_window.getNumberOfUniquePoints();
-//					if (noOfUnique < numberOfClusters && noOfUnique < 7) {
+//				if (noOfUnique>3) {
+					
+//					// if we have it already in cache 
+//					if (results.containsKey(m_window)) {
+//						OutputGenerator.outputAnomaly(machineNr, dimensionNr, results.get(m_window), (int) tmp_timestamp_ifFull.get(Constants.WINDOW_SIZE - Constants.SMALLER_WINDOW - 1));
+//
+//					// if we do not have it already in cache
+//					} else {
 
 						// then do the Kmeans and Anomaly Detection.
 						boolean hasAnomalies = singleKMeans.performAllCalculation(numberOfClusters, m_window, Constants.THRESHOLD);
 
 						if (hasAnomalies) {
 							double finalThreshold = singleKMeans.getThreshold();
-							// if(OutputGenerator.anomalyCounter>42){
+							// if(OutputGenerator.anomalyCounter>42) {
 							// String output = OutputGenerator.anomalyCounter +
 							// "," + machineNr + "," + dimensionNr + "," +
 							// numberOfClusters + ",  " + finalThreshold +
@@ -105,10 +118,16 @@ public class Controller {
 							// Constants.SMALLER_WINDOW - 1);
 							// System.out.println(output);
 							// }
-							OutputGenerator.outputAnomaly(machineNr, dimensionNr, finalThreshold,
-									(int) tmp_timestamp_ifFull.get(Constants.WINDOW_SIZE - Constants.SMALLER_WINDOW - 1));
-						}
+							OutputGenerator.outputAnomaly(machineNr, dimensionNr, finalThreshold, (int) tmp_timestamp_ifFull.get(Constants.WINDOW_SIZE - Constants.SMALLER_WINDOW - 1));
+
+//							results.put(m_window, finalThreshold);
+//						}
+
+						
+//						System.out.println("Hit " + m_window);
+//						counter++;
 //					}
+					// }
 				}
 
 				// FIFO remove
@@ -121,6 +140,21 @@ public class Controller {
 			}
 
 		}
+	}
+
+	public int getSafeWindowSize(int windowSize, int smallerWindowSize, double thresholdProbability) {
+		int maxElements = (smallerWindowSize + 1) / 2;
+		double testProbability;
+
+		while (maxElements > 0) {
+			testProbability = 1.0 / (double) Math.pow((1 + maxElements), maxElements);
+
+			if (testProbability > thresholdProbability)
+				break;
+
+			maxElements--;
+		}
+		return (windowSize - maxElements);
 	}
 
 }

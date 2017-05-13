@@ -51,4 +51,9 @@ public class Point {
 	public String toString() {
 		return "(" + String.format("%.2f", x) + ", " + clusterNumber  + ")";
 	}
+	
+	@Override
+	public boolean equals(Object o){
+	    return this.getX()==((Point) o).getX();
+	}
 }

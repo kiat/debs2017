@@ -129,11 +129,14 @@ public class KMeans {
 		HashSet <Double> uniquePoints = new HashSet <Double>();
 		int countUnique = 0;
 		
-		// Cuurent value:
+		// Current value:
 		double curValue;
+		
 		for (int i = 0; i < _points.size(); i++) {			
+			
 			if (countUnique < noOfClusters) {
 				curValue = _points.get(i).getX();
+				
 				if(!uniquePoints.contains(curValue)) {
 					uniquePoints.add(curValue);			
 					
@@ -149,9 +152,9 @@ public class KMeans {
 			}
 		}
 		
-//		// all equal
-//		if(countUnique == 1)
-//			return false;
+		// number of distinct points are smaller than 3
+		if(countUnique <= 3)
+			return false;
 		
 		// TODO
 		if(countUnique > noOfClusters && countUnique > 7 )

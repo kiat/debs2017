@@ -25,8 +25,9 @@ public class StreamInput {
             channel.queueDeclarePassive("hobbit.datagen-system.exp1").getQueue();
 
             // Open the file and buffer it
-            File file = new File("/home/kia/Desktop/Debs2017_data/19.04.2017.10molding_machine_5000dp/10molding_machine_5000dp.nt");
-//            File file = new File("/home/kia/Desktop/Debs2017_data/19.04.2017.1molding_machine_5000dp/molding_machine_5000dp.nt");
+//            File file = new File("/home/kia/Desktop/Debs2017_data/19.04.2017.10molding_machine_5000dp/10molding_machine_5000dp.nt");
+            File file = new File("/home/kia/Desktop/Debs2017_data/19.04.2017.1molding_machine_5000dp/molding_machine_5000dp.nt");
+//            File file =new File("/home/kia/Desktop/Debs2017_data/1000molding_machine.metadata.nt");
             
             
             BufferedReader br = new BufferedReader(new FileReader(file));
