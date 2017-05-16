@@ -153,18 +153,18 @@ public class CircularQueue {
 		
 		// Current value:
 		double curValue;
-		for (Point point : points) {			
+		for (Point point : points) {		
 				curValue = point.getX();
 				if(!uniquePoints.contains(curValue)) {
 					uniquePoints.add(curValue);			
 					//Increment unique points count:
 					countUnique++;	
 				}
-
 				if(countUnique>3)
-					return false;
+					return true;
 		}	
-		return true;
+		
+		return false;
 	}
 	
 	@Override

@@ -91,7 +91,7 @@ public class Controller {
 				// System.out.println(machineNr +","+ dimensionNr+","+ numberOfClusters +","+ m_window );
 
 				// If all data items in the window are equal there will be no anomaly there to report.
-//				if (m_window.numberOfUniquePointsLargerThan3()) {
+				if (m_window.numberOfUniquePointsLargerThan3()) {
 					
 					Double fromCacheResult=resultCache.get(m_window);
 					
@@ -113,7 +113,6 @@ public class Controller {
 							// }
 
 							OutputGenerator.outputAnomaly(machineNr, dimensionNr, finalThreshold, (int) tmp_timestamp_ifFull.get(Constants.WINDOW_SIZE - Constants.SMALLER_WINDOW - 1));
-							
 							resultCache.put(m_window, finalThreshold);
 //							results.put(m_window, finalThreshold);
 						}
@@ -122,7 +121,7 @@ public class Controller {
 //						counter++;
 //					}
 					 }
-//				}
+				}
 
 				// FIFO remove
 				m_window.remove();
