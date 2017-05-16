@@ -143,6 +143,30 @@ public class CircularQueue {
 	}
 	
 	
+	
+	
+	
+	// Returns number of unique points:
+	public boolean numberOfUniquePointsLargerThan3() {
+		int countUnique = 0;
+		HashSet <Double> uniquePoints = new HashSet <Double>();
+		
+		// Current value:
+		double curValue;
+		for (Point point : points) {			
+				curValue = point.getX();
+				if(!uniquePoints.contains(curValue)) {
+					uniquePoints.add(curValue);			
+					//Increment unique points count:
+					countUnique++;	
+				}
+
+				if(countUnique>3)
+					return false;
+		}	
+		return true;
+	}
+	
 	@Override
 	public int hashCode()
 	{

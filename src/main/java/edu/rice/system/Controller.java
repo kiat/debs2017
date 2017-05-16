@@ -5,6 +5,7 @@ import java.util.LinkedList;
 
 import edu.rice.kmeans.CircularQueue;
 import edu.rice.kmeans.KMeans;
+import edu.rice.kmeans.LRUCache;
 import edu.rice.metadata.MetadataManager;
 import edu.rice.output.OutputGenerator;
 import edu.rice.utils.Constants;
@@ -16,8 +17,9 @@ public class Controller {
 	static HashMap<Integer, CircularQueue> windowsMap = new HashMap<Integer, CircularQueue>();
 	static HashMap<Integer, LinkedList<Integer>> timestamps = new HashMap<Integer, LinkedList<Integer>>();
 
-	static HashMap<CircularQueue, Double> results = new HashMap<CircularQueue, Double>();
-
+//	static HashMap<CircularQueue, Double> results = new HashMap<CircularQueue, Double>();
+	static LRUCache<CircularQueue, Double> resultCache = new LRUCache<CircularQueue, Double>(100000);
+	
 //	static int counter = 1;
 	static int safeWindowSize;
 
@@ -48,8 +50,7 @@ public class Controller {
 
 		//
 		// if(machineNr==8 && dimensionNr==83)
-		// System.out.println(machineNr +","+ dimensionNr+","+ timestampNr +","+
-		// value );
+		// System.out.println(machineNr +","+ dimensionNr+","+ timestampNr +","+  value );
 
 		int machine_Dimension_ID = machineNr * 100000 + dimensionNr;
 
@@ -92,42 +93,38 @@ public class Controller {
 
 				// If all data items in the window are equal there will be no
 				// anomaly there to report.
-//				 int noOfUnique = m_window.getNumberOfUniquePoints();
-
-//				if (noOfUnique>3) {
+				if (m_window.numberOfUniquePointsLargerThan3()) {
+					
+					Double fromCacheResult=resultCache.get(m_window);
 					
 					// if we have it already in cache 
-					if (results.containsKey(m_window)) {
-						OutputGenerator.outputAnomaly(machineNr, dimensionNr, results.get(m_window), (int) tmp_timestamp_ifFull.get(Constants.WINDOW_SIZE - Constants.SMALLER_WINDOW - 1));
+					if (fromCacheResult!=null) {
+						OutputGenerator.outputAnomaly(machineNr, dimensionNr, fromCacheResult, (int) tmp_timestamp_ifFull.get(Constants.WINDOW_SIZE - Constants.SMALLER_WINDOW - 1));
 
-					// if we do not have it already in cache
+						// if we do not have it already in cache
 					} else {
+						// then do the KMeans and Anomaly Detection.
 
-						// then do the Kmeans and Anomaly Detection.
 						boolean hasAnomalies = singleKMeans.performAllCalculation(numberOfClusters, m_window, Constants.THRESHOLD);
-
+						
 						if (hasAnomalies) {
 							double finalThreshold = singleKMeans.getThreshold();
 							// if(OutputGenerator.anomalyCounter>42) {
-							// String output = OutputGenerator.anomalyCounter +
-							// "," + machineNr + "," + dimensionNr + "," +
-							// numberOfClusters + ",  " + finalThreshold +
-							// " ,  " + m_window.toString() + " Timestamps " +
-							// (int)
-							// tmp_timestamp_ifFull.get(Constants.WINDOW_SIZE -
+							// String output = OutputGenerator.anomalyCounter +  "," + machineNr + "," + dimensionNr + "," +  numberOfClusters + ",  " + finalThreshold +  " ,  " + m_window.toString() + " Timestamps " +  (int) tmp_timestamp_ifFull.get(Constants.WINDOW_SIZE -
 							// Constants.SMALLER_WINDOW - 1);
 							// System.out.println(output);
 							// }
 							OutputGenerator.outputAnomaly(machineNr, dimensionNr, finalThreshold, (int) tmp_timestamp_ifFull.get(Constants.WINDOW_SIZE - Constants.SMALLER_WINDOW - 1));
-
-							results.put(m_window, finalThreshold);
+							
+							resultCache.put(m_window, finalThreshold);
+//							results.put(m_window, finalThreshold);
 						}
 
 						
 //						System.out.println("Hit " + m_window);
 //						counter++;
 //					}
-					// }
+					 }
 				}
 
 				// FIFO remove
