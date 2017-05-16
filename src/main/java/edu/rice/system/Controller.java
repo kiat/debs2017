@@ -88,11 +88,9 @@ public class Controller {
 
 				int numberOfClusters = MetadataManager.getInstance().getClusterNr(machineNr, dimensionNr);
 
-				// System.out.println(machineNr +","+ dimensionNr+","+
-				// numberOfClusters +","+ m_window );
+				// System.out.println(machineNr +","+ dimensionNr+","+ numberOfClusters +","+ m_window );
 
-				// If all data items in the window are equal there will be no
-				// anomaly there to report.
+				// If all data items in the window are equal there will be no anomaly there to report.
 				if (m_window.numberOfUniquePointsLargerThan3()) {
 					
 					Double fromCacheResult=resultCache.get(m_window);
@@ -104,22 +102,21 @@ public class Controller {
 						// if we do not have it already in cache
 					} else {
 						// then do the KMeans and Anomaly Detection.
-
 						boolean hasAnomalies = singleKMeans.performAllCalculation(numberOfClusters, m_window, Constants.THRESHOLD);
 						
 						if (hasAnomalies) {
+							
 							double finalThreshold = singleKMeans.getThreshold();
 							// if(OutputGenerator.anomalyCounter>42) {
-							// String output = OutputGenerator.anomalyCounter +  "," + machineNr + "," + dimensionNr + "," +  numberOfClusters + ",  " + finalThreshold +  " ,  " + m_window.toString() + " Timestamps " +  (int) tmp_timestamp_ifFull.get(Constants.WINDOW_SIZE -
-							// Constants.SMALLER_WINDOW - 1);
-							// System.out.println(output);
+							//   String output = OutputGenerator.anomalyCounter +  "," + machineNr + "," + dimensionNr + "," +  numberOfClusters + ",  " + finalThreshold +  " ,  " + m_window.toString() + " Timestamps " +  (int) tmp_timestamp_ifFull.get(Constants.WINDOW_SIZE - Constants.SMALLER_WINDOW - 1);
+							//   System.out.println(output);
 							// }
+
 							OutputGenerator.outputAnomaly(machineNr, dimensionNr, finalThreshold, (int) tmp_timestamp_ifFull.get(Constants.WINDOW_SIZE - Constants.SMALLER_WINDOW - 1));
 							
 							resultCache.put(m_window, finalThreshold);
 //							results.put(m_window, finalThreshold);
 						}
-
 						
 //						System.out.println("Hit " + m_window);
 //						counter++;
