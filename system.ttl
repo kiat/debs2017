@@ -13,6 +13,6 @@
     hobbit:imageName "git.project-hobbit.eu:4567/dj16/rice";
 
     <http://www.debs2017.org/gc/probabilityThreshold> "0.005"^^xsd:double;
-    <http://www.debs2017.org/gc/windowSize> "10"^^xsd:unsignedInt;
-    <http://www.debs2017.org/gc/transitionsCount> "5"^^xsd:unsignedInt;
+    <http://www.debs2017.org/gc/windowSize> "1000"^^xsd:unsignedInt;
+    <http://www.debs2017.org/gc/transitionsCount> "250"^^xsd:unsignedInt;
     <http://www.debs2017.org/gc/maxClusterIterations> "50"^^xsd:unsignedInt.

@@ -31,7 +31,7 @@ public class SerializeInput {
             fileIn.close();
 
             while(true) {
-                Thread.sleep(1);
+//                Thread.sleep(1);
                 for (byte[] m : data) {
                     channel.basicPublish("", "hobbit.datagen-system.exp1", null, m);
                 }

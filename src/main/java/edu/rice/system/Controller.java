@@ -18,7 +18,7 @@ public class Controller {
 	static HashMap<Integer, LinkedList<Integer>> timestamps = new HashMap<Integer, LinkedList<Integer>>();
 
 //	static HashMap<CircularQueue, Double> results = new HashMap<CircularQueue, Double>();
-//	static LRUCache<CircularQueue, Double> resultCache = new LRUCache<CircularQueue, Double>(100000);
+//	static LRUCache<CircularQueue, Double> resultCache = new LRUCache<CircularQueue, Double>(10000);
 	
 //	static int counter = 1;
 	static int safeWindowSize;
@@ -91,7 +91,7 @@ public class Controller {
 				// System.out.println(machineNr +","+ dimensionNr+","+ numberOfClusters +","+ m_window );
 
 				// If all data items in the window are equal there will be no anomaly there to report.
-//				if (m_window.numberOfUniquePointsLargerThan3()) {
+				if (m_window.numberOfUniquePointsLargerThan3()) {
 					
 //					Double fromCacheResult=resultCache.get(m_window);
 					
@@ -120,7 +120,7 @@ public class Controller {
 //						System.out.println("Hit " + m_window);
 //						counter++;
 //					}
-//					 }
+					 }
 //				}
 
 				// FIFO remove
