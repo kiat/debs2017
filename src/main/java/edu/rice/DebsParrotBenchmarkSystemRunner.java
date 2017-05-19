@@ -60,8 +60,8 @@ public class DebsParrotBenchmarkSystemRunner {
     
     public static void main(String... args) throws Exception {
     	// Read the metadata and the constant parameters from system.ttl     	
-//		MetadataManager.getInstance().readMetaData("./"molding_machine_5000dp.metadata.data"");
-    	MetadataManager.getInstance().readMetaData("./1000molding_machine.metadata.data");
+		MetadataManager.getInstance().readMetaData("./molding_machine_5000dp.metadata.data");
+//    	MetadataManager.getInstance().readMetaData("./1000molding_machine.metadata.data");
 		ReadConstantsFromSystemTTL.readSystemTTL();
 
     	// TODO: Take thie line out when you run it on platform.

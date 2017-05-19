@@ -18,7 +18,7 @@ public class Controller {
 	static HashMap<Integer, LinkedList<Integer>> timestamps = new HashMap<Integer, LinkedList<Integer>>();
 
 //	static HashMap<CircularQueue, Double> results = new HashMap<CircularQueue, Double>();
-	static LRUCache<CircularQueue, Double> resultCache = new LRUCache<CircularQueue, Double>(100000);
+//	static LRUCache<CircularQueue, Double> resultCache = new LRUCache<CircularQueue, Double>(100000);
 	
 //	static int counter = 1;
 	static int safeWindowSize;
@@ -91,16 +91,16 @@ public class Controller {
 				// System.out.println(machineNr +","+ dimensionNr+","+ numberOfClusters +","+ m_window );
 
 				// If all data items in the window are equal there will be no anomaly there to report.
-				if (m_window.numberOfUniquePointsLargerThan3()) {
+//				if (m_window.numberOfUniquePointsLargerThan3()) {
 					
-					Double fromCacheResult=resultCache.get(m_window);
+//					Double fromCacheResult=resultCache.get(m_window);
 					
-					// if we have it already in cache 
-					if (fromCacheResult!=null) {
-						OutputGenerator.outputAnomaly(machineNr, dimensionNr, fromCacheResult, (int) tmp_timestamp_ifFull.get(Constants.WINDOW_SIZE - Constants.SMALLER_WINDOW - 1));
-
-						// if we do not have it already in cache
-					} else {
+//					// if we have it already in cache 
+//					if (fromCacheResult!=null) {
+//						OutputGenerator.outputAnomaly(machineNr, dimensionNr, fromCacheResult, (int) tmp_timestamp_ifFull.get(Constants.WINDOW_SIZE - Constants.SMALLER_WINDOW - 1));
+//
+//						// if we do not have it already in cache
+//					} else {
 						// then do the KMeans and Anomaly Detection.
 						boolean hasAnomalies = singleKMeans.performAllCalculation(numberOfClusters, m_window, Constants.THRESHOLD);
 						
@@ -113,15 +113,15 @@ public class Controller {
 							// }
 
 							OutputGenerator.outputAnomaly(machineNr, dimensionNr, finalThreshold, (int) tmp_timestamp_ifFull.get(Constants.WINDOW_SIZE - Constants.SMALLER_WINDOW - 1));
-							resultCache.put(m_window, finalThreshold);
+//							resultCache.put(m_window, finalThreshold);
 //							results.put(m_window, finalThreshold);
 						}
 						
 //						System.out.println("Hit " + m_window);
 //						counter++;
 //					}
-					 }
-				}
+//					 }
+//				}
 
 				// FIFO remove
 				m_window.remove();
