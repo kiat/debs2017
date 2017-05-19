@@ -330,7 +330,8 @@ public class KMeans {
 				
 				// New Logic: If a point is equi-distant from two clusters put it in the higher cluster.
 				else if (distance == min) {
-					if(c.getCentroid().getX() > clusterCentroid) {
+					//if(c.getCentroid().getX() > clusterCentroid) {
+					  if(Math.abs(c.getCentroid().getX()) > Math.abs(clusterCentroid)) {
 						min = distance;
 						cluster = i;
 						clusterCentroid = c.getCentroid().getX();						
