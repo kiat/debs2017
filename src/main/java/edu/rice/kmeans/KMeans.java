@@ -152,14 +152,6 @@ public class KMeans {
 			}
 		}
 		
-//		// number of distinct points are smaller than 3
-//		if(countUnique <= 3)
-//			return false;
-//		
-//		// TODO
-//		if(countUnique > noOfClusters && countUnique > 7 )
-//			return false;
-		
 		// If a given window has less than K distinct values than the number of clusters to be computed 
 		// must be equal to the number of distinct values in the window.
 		if (countUnique < noOfClusters) {

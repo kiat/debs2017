@@ -22,7 +22,8 @@ public class SerializeInput {
             // Connect to the RabbitMQ
             Connection conn = factory.newConnection();
             Channel channel = conn.createChannel();
-            channel.queueDeclarePassive("hobbit.datagen-system.exp1").getQueue();
+            //channel.queueDeclarePassive("hobbit.datagen-system.exp1").getQueue();
+            channel.queueDeclare("hobbit.datagen-system.exp1", false, false, true, null).getQueue();
 
             FileInputStream fileIn = new FileInputStream("../resources/molding_machine_5000dp.ser");
             ObjectInputStream in = new ObjectInputStream(fileIn);
@@ -30,7 +31,7 @@ public class SerializeInput {
             in.close();
             fileIn.close();
 
-            while(true) {
+            for(int i = 0; i < 4; ++i) {
 //                Thread.sleep(1);
                 for (byte[] m : data) {
                     channel.basicPublish("", "hobbit.datagen-system.exp1", null, m);
